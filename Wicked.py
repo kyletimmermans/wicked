@@ -117,5 +117,7 @@ driver.quit()  # DON'T DELETE THIS
 differences = list(set(following) - set(followers))  # Everyone in following list who's not in followers list
 
 # Print Results to Console
+print(" ")
+print(Fore.GREEN, "Results: ", Fore.RESET)
 for i in differences:
     print(i)
