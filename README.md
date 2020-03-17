@@ -12,11 +12,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 
 _Note: This program does not log your username or password, it simply passes it to the Instagram log-in form_
 
-<pre>
-hello, this is
-   just an     example
-....
-</pre>
+<p>&nbsp;</p>
 
 ### Sample Program Output
 ![alt text](https://github.com/kyletimmermans/wicked/blob/master/output_screenshot.png "Sample Program Output")
