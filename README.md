@@ -11,3 +11,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 5. Input your username and password for Instagram, and wait a few minutes for it to print to the console, depending on how many people you follow / follow you
 
 _Note: This program does not log your username or password, it simply passes it to the Instagram log-in form_
+
+
+### Sample Program Output
+![alt text](https:// "Sample Program Output")
