@@ -14,4 +14,4 @@ _Note: This program does not log your username or password, it simply passes it 
 
 
 ### Sample Program Output
-![alt text](https:// "Sample Program Output")
+![alt text](https://github.com/kyletimmermans/wicked/blob/master/output_screenshot.png "Sample Program Output")
