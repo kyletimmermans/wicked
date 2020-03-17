@@ -67,13 +67,6 @@ time.sleep(1)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(username)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(password)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
-
-'''
-# If the div[5]/a/img can't be found, then wrong username / password
-print("[+] Checking login") if no error, print(Fore.Green, "Successful") if error print(Fore.Red, "Wrong username / password") && do while false
-print(Fore.RESET)
-'''
-
 time.sleep(10)  # Login Wait Grace Period
 driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]/a/img").click()  # Go to instagram.com/username
 time.sleep(3)
