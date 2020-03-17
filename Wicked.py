@@ -43,15 +43,8 @@ print("Created by: @KyleTimmermans")
 print("ASCII Art by jgs")
 print(" ")
 print("See who's not following you back on Instagram!")
-print("This make take some time depending on how many people you follow")
+print("This may take some time depending on how many people you follow / follow you")
 print(Fore.RESET)  # Reset text color
-
-'''
-print("[+] Checking Internet Connection: ", end='') + print(Fore.GREEN, "Working") if true, print(Fore.RED, "Error: No Internet Connection") && break if not
-print(Fore.RESET)
-print("[+] Checking if chromedriver is in this folder + print(Fore.GREEN, "Working") if true, print(Fore.RED, "Error: chromedriver not found in parent folder") && break if not
-print(Fore.RESET)
-'''
 
 # Input insta creds
 username = input("Input your Instagram username: ")
