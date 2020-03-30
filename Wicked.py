@@ -105,7 +105,6 @@ driver.quit()  # DON'T DELETE THIS
 
 differences = list(set(following) - set(followers)) 
 
-# Print Results to Console
 print(Fore.GREEN, " ")
 print("Results: ", Fore.RESET)
 for i in differences:
