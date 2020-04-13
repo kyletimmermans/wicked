@@ -1,3 +1,7 @@
+![Version 1.0](http://img.shields.io/badge/version-v1.0-orange.svg)
+![Python 3.8](http://img.shields.io/badge/python-3.8-blue.svg)
+[![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
+
 # <div align="center">Wicked</div>
 
 This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. This program does not use the Instagram API.
