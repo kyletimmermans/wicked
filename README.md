@@ -26,5 +26,5 @@ _Note: This program does not log your username or password, it simply passes it 
 ### Changelog
 <div>v1.0: Initial-Release</div>
 <div>v2.0:<div>
-<div>&ensp;&ensp;Handle for possible incorrect username and password</div>
-<div>&ensp;&ensp;Handle path change for different Operating Systems</div>
+<div>&ensp;&ensp;-Handle for possible incorrect username and password</div>
+<div>&ensp;&ensp;-Handle path change for different Operating Systems</div>
