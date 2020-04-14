@@ -1,4 +1,4 @@
 selenium
 beautifulsoup4
 colorama
-progressbar2
+tqdm
