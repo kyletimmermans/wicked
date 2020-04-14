@@ -1,4 +1,4 @@
-![Version 2.0](http://img.shields.io/badge/version-v2.0-orange.svg)
+![Version 2.1](http://img.shields.io/badge/version-v2.1-orange.svg)
 ![Python 3.8](http://img.shields.io/badge/python-3.8-blue.svg)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
@@ -33,3 +33,4 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Handle for possible incorrect username and password</div>
 <div>&ensp;&ensp;-Handle path change for different Operating Systems (Windows, OSX, Linux)</div>
 <div>&ensp;&ensp;-Automatically add and then remove a line from 'hosts' file to fix selenium error</div>
+<div>v2.1: Added progress bar while loading results</div>
