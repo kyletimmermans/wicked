@@ -14,7 +14,11 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 4. Finally, run with admin/root permissions **python3 Wicked.py**
 5. Input your username and password for Instagram, and wait a few minutes for it to print to the console, depending on how many people you follow / follow you
 
-_Note: This program does not log your username or password, it simply passes it to the Instagram log-in form_
+_Note:_ 
+_1. This program does not log your username or password, it simply passes it to the Instagram log-in form_ 
+<div>&nbsp;<div>
+_2. The program will also temporarily add the line, "127.0.0.1 localhost" to your hosts file to fix some errors. If that line is already present in your hosts file, it won't touch anything. If this line was added by the Wicked, it will automatically delete the added line to restore your hosts file back to normal._
+
 
 <p>&nbsp;</p>
 
