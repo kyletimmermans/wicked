@@ -136,12 +136,15 @@ def getList():
 time.sleep(2)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").click()  # Open 'Following' Modal
 time.sleep(2)
+print("")
+print("Part 1/2")
 jsLoop(myAmountofFollowing)
 following = getList()  # Following List
 time.sleep(2)
 driver.execute_script("window.history.go(-1)")  # Close out of 'Following' Modal
 time.sleep(2)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[2]/a").click()  # Open 'Followers' Modal
+print("Part 2/2")
 jsLoop(myAmountofFollowers)
 followers = getList()  # Followers List
 
