@@ -1,4 +1,4 @@
-![Version 1.0](http://img.shields.io/badge/version-v1.0-orange.svg)
+![Version 1.1](http://img.shields.io/badge/version-v1.1-orange.svg)
 ![Python 3.8](http://img.shields.io/badge/python-3.8-blue.svg)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
@@ -20,3 +20,9 @@ _Note: This program does not log your username or password, it simply passes it 
 
 ### Sample Program Output
 ![alt text](https://github.com/kyletimmermans/wicked/blob/master/output_screenshot.png "Sample Program Output")
+
+</br>
+
+### Changelog
+v1.0: Initial-Release
+v1.1: Handle for possible incorrect username and password
