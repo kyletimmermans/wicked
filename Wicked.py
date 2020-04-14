@@ -16,6 +16,7 @@ import colorama
 from colorama import Fore
 import os, sys
 from sys import platform
+from tqdm import trange
 colorama.init()  # Initialize colorama
 
 print(Fore.GREEN) # Make ASCII Art and Banner Green
@@ -69,23 +70,19 @@ def lineCheck(file, string):
 # Check OS type for correct path format and if hosts file needs to be changed
 if platform == "linux" or platform == "linux2":  # Linux
     # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-    #file = os.path.expanduser('~/etc/hosts')
     if lineCheck('/etc/hosts', "127.0.0.1 localhost"):  # If its there already
         alreadyThere = True
     else:
-        file = os.path.expanduser('~/etc/hosts')
-        host_file = open(file, "a")
+        host_file = open('/etc/hosts', "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
     driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder
 elif platform == "darwin":  # OSX
     # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-    #file = os.path.expanduser('~/etc/hosts')
     if lineCheck('/etc/hosts', "127.0.0.1 localhost"):  # If its there already
         alreadyThere = True
     else:
-        file = os.path.expanduser('~/etc/hosts')
-        host_file = open(file, "a")
+        host_file = open('/etc/hosts', "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
     driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder
@@ -115,13 +112,13 @@ myAmountofFollowing = int(myAmountofFollowing.replace(',', '').replace('K', ''))
 myAmountofFollowers = driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[2]/a/span").text
 myAmountofFollowers = int(myAmountofFollowers.replace(',', '').replace('K', ''))
 
-# JavaScript Auto Scroll Div List - To Load All Elements (prints on one line)
+# JavaScript Auto Scroll Div List - To Load All Elements (prints in one line)
 scroll_script = ("var x = document.evaluate('/html/body/div[4]/div/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
                  "x.scrollTo(0, x.scrollHeight);")
 
 # Send scrolls
 def jsLoop(size):
-    for i in range(int(size * 0.115)):  # Only 0.115 percent of total follow count = sufficient loops
+    for i in trange(int(size * 0.115)):  # Only 0.115 percent of total follow count = sufficient loops, trange prints progressbar
         driver.execute_script(scroll_script)
         time.sleep(0.5)
 
@@ -153,7 +150,6 @@ driver.quit()  # DON'T DELETE THIS
 # Remove hosts addition if it was made
 if alreadyThere == False:
     if platform == "linux" or platform == "linux2":  # Linux
-        #file = os.path.expanduser('/etc/hosts')
         readFile = open('/etc/hosts')
         lines = readFile.readlines()
         readFile.close()
@@ -161,7 +157,6 @@ if alreadyThere == False:
         w.writelines([item for item in lines[:-1]])
         w.close()
     elif platform == "darwin":  # OSX
-        #file = os.path.expanduser('/etc/hosts')
         readFile = open('/etc/hosts')
         lines = readFile.readlines()
         readFile.close()
