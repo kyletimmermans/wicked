@@ -28,3 +28,4 @@ _Note: This program does not log your username or password, it simply passes it 
 <div>v2.0:<div>
 <div>&ensp;&ensp;-Handle for possible incorrect username and password</div>
 <div>&ensp;&ensp;-Handle path change for different Operating Systems</div>
+<div>&ensp;&ensp;-Automatically add and then remove a lien from 'hosts' file to fix selenium error</div>
