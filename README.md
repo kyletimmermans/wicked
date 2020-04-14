@@ -14,8 +14,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 4. Finally, run with admin/root permissions **python3 Wicked.py**
 5. Input your username and password for Instagram, and wait a few minutes for it to print to the console, depending on how many people you follow / follow you
 
-_Note:_
-
+_Note:_ 
 _1. This program does not log your username or password, it simply passes it to the Instagram log-in form_                        
 _2. The program will also temporarily add the line if not already present, "127.0.0.1 localhost" to your hosts file to fix some errors._
 
