@@ -3,7 +3,7 @@ Kyle Timmermans
 03/12/2020
 Compiled in python 3.8.2
 
-v2.0
+v2.1
 '''
 
 # Driving Chrome (Headless) with Selenium
@@ -69,8 +69,8 @@ def lineCheck(file, string):
 # Check OS type for correct path format and if hosts file needs to be changed
 if platform == "linux" or platform == "linux2":  # Linux
     # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-    file = os.path.expanduser('~/etc/hosts')
-    if lineCheck(file, "127.0.0.1 localhost"):  # If its there already
+    #file = os.path.expanduser('~/etc/hosts')
+    if lineCheck('/etc/hosts', "127.0.0.1 localhost"):  # If its there already
         alreadyThere = True
     else:
         file = os.path.expanduser('~/etc/hosts')
@@ -80,8 +80,8 @@ if platform == "linux" or platform == "linux2":  # Linux
     driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder
 elif platform == "darwin":  # OSX
     # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-    file = os.path.expanduser('~/etc/hosts')
-    if lineCheck(file, "127.0.0.1 localhost"):  # If its there already
+    #file = os.path.expanduser('~/etc/hosts')
+    if lineCheck('/etc/hosts', "127.0.0.1 localhost"):  # If its there already
         alreadyThere = True
     else:
         file = os.path.expanduser('~/etc/hosts')
@@ -153,16 +153,16 @@ driver.quit()  # DON'T DELETE THIS
 # Remove hosts addition if it was made
 if alreadyThere == False:
     if platform == "linux" or platform == "linux2":  # Linux
-        file = os.path.expanduser('/etc/hosts')
-        readFile = open(file)
+        #file = os.path.expanduser('/etc/hosts')
+        readFile = open('/etc/hosts')
         lines = readFile.readlines()
         readFile.close()
         w = open(file, 'w')
         w.writelines([item for item in lines[:-1]])
         w.close()
     elif platform == "darwin":  # OSX
-        file = os.path.expanduser('/etc/hosts')
-        readFile = open(file)
+        #file = os.path.expanduser('/etc/hosts')
+        readFile = open('/etc/hosts')
         lines = readFile.readlines()
         readFile.close()
         w = open(file, 'w')
