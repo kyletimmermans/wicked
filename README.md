@@ -24,5 +24,5 @@ _Note: This program does not log your username or password, it simply passes it 
 </br>
 
 ### Changelog
-v1.0: Initial-Release
-v1.1: Handle for possible incorrect username and password
+<div>v1.0: Initial-Release</div>
+<div>v1.1: Handle for possible incorrect username and password</div>
