@@ -9,6 +9,7 @@ v2.1
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.common.exceptions import ElementClickInterceptedException
 from bs4 import BeautifulSoup
 import getpass
 import time
@@ -49,9 +50,17 @@ print("See who's not following you back on Instagram!")
 print("This may take some time depending on how many people you follow / follow you")
 print(Fore.RESET)  # Reset text color
 
+# Init username and password
+username = "hi"
+password = "hi"
+
 # Input insta creds
-username = input("Input your Instagram username: ")
-password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
+def inputCreds():
+    global username, password
+    username = input("Input your Instagram username: ")
+    password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
+
+inputCreds()  # First time enterting username/password
 
 # Begin driver
 chrome_options = Options()  # Initialize options
@@ -95,15 +104,26 @@ elif platform == "win32" or "win64":  # Windows
         host_file.close()
     driver = webdriver.Chrome(options=chrome_options, executable_path="C:\..\chromedriver.exe")  # ./ indicates this folder
 
-driver.get("https://instagram.com")  # Login page
-time.sleep(1)
-driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(username)
-driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(password)
-driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
-time.sleep(10)  # Login Wait Grace Period
-driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]/a/img").click()  # Go to instagram.com/username
-time.sleep(3)
+# Check if username / password is correct
+result = None
+while result is None:
+    try:
+        driver.get("https://instagram.com")  # Login page
+        time.sleep(5)
+        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(username)
+        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(password)
+        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
+        time.sleep(10)  # Login Wait Grace Period
+        driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]/a/img").click()  # Go to instagram.com/username
+        result = "Good"  # Breakout of loop, correct login
+    except ElementClickInterceptedException:
+        print("")
+        print("Username or Password is Incorrect! Try Again")
+        print("")
+        inputCreds()
 
+
+time.sleep(5)  # Wait after clicking on profile
 # Get Following Number
 myAmountofFollowing = driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").text  # Used to track javascript passes
 myAmountofFollowing = int(myAmountofFollowing.replace(',', '').replace('K', ''))  # Make into int and remove commas and 'K' (thousand) if present
