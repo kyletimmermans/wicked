@@ -23,7 +23,7 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <p>&nbsp;</p>
 
 ### Sample Program Output
-![alt text](https://github.com/kyletimmermans/wicked/blob/master/output_screenshot.png "Sample Program Output")
+![alt text](https://github.com/kyletimmermans/wicked/blob/master/output.png "Sample Program Output")
 
 </br>
 
