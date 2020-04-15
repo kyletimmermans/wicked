@@ -30,7 +30,7 @@ _2. The program will also **temporarily** add the line, if not already present, 
 ### Changelog
 <div>v1.0: Initial-Release</div>
 <div>v2.0:<div>
-<div>&ensp;&ensp;-Handle for possible incorrect username and password</div>
+<div>&ensp;&ensp;-Handle for possible incorrect username and password and re-input them if their incorrect</div>
 <div>&ensp;&ensp;-Handle path change for different Operating Systems (Windows, OSX, Linux)</div>
 <div>&ensp;&ensp;-Automatically add and then remove a line from 'hosts' file to fix selenium error</div>
 <div>v2.1: Added progress bar while loading results</div>
