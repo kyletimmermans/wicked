@@ -13,7 +13,7 @@ ToDo:
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import *
 from bs4 import BeautifulSoup
 import getpass
 import time
@@ -73,12 +73,16 @@ chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  #
 
 alreadyThere = False  # if localhost line is already present, we don't want to mess with it
 
-def lineCheck(file, string):
-    with open(file, 'r') as hostsFile: #Open file in read-only
-        for line in hostsFile:  # Check every line
-            if string in line:  # If in the line, return True, else False
-                return True
-    return False
+def lineCheck(file, string):  # Check if hosts file is in normal spit
+    try:
+        with open(file, 'r') as hostsFile: #Open file in read-only
+            for line in hostsFile:  # Check every line
+                if string in line:  # If in the line, return True, else False
+                    return True
+        return False
+    except FileNotFoundError:
+        print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found!")
+        quit()
 
 # Check OS type for correct path format and if hosts file needs to be changed
 if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have the same instructions
@@ -89,7 +93,11 @@ if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX a
         host_file = open("/etc/hosts", "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
-    driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder for OSX/Linux
+    try:
+        driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder for OSX/Linux
+    except WebDriverException:
+        print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
+        quit()
 elif platform == "win32" or "win64":  # Windows
     if lineCheck("C:\Windows\System32\drivers\etc\hosts", "127.0.0.1 localhost"):
         alreadyThere = True
@@ -97,7 +105,11 @@ elif platform == "win32" or "win64":  # Windows
         host_file = open("C:\Windows\System32\drivers\etc\hosts", "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
-    driver = webdriver.Chrome(options=chrome_options, executable_path="chromedriver.exe")  # No need for path, using current working directory
+    try:
+        driver = webdriver.Chrome(options=chrome_options, executable_path="chromedriver.exe")  # No need for path, using current working directory
+    except WebDriverException:
+        print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
+        quit()
 
 # Check if username / password is correct
 result = None
@@ -189,5 +201,3 @@ print(Fore.GREEN, " ")
 print("Results: ", Fore.RESET)
 for i in differences:
     print(i)
-
-
