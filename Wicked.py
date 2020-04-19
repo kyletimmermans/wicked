@@ -4,6 +4,11 @@ Kyle Timmermans
 Compiled in python 3.8.2
 
 v2.1
+
+ToDo:
+    -Error Handling - If Host File Not Found
+    -Error Handling - If chromedriver Not Found in Same Folder
+    -Test out program, does current working directory work for windows?
 '''
 
 # Driving Chrome (Headless) with Selenium
@@ -85,7 +90,7 @@ if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX a
         host_file = open("/etc/hosts", "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
-    driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder
+    driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder for OSX/Linux
 elif platform == "win32" or "win64":  # Windows
     if lineCheck("C:\Windows\System32\drivers\etc\hosts", "127.0.0.1 localhost"):
         alreadyThere = True
