@@ -9,7 +9,6 @@ ToDo:
     -Error Handling - If Host File Not Found
     -Error Handling - If chromedriver Not Found in Same Folder
     -Test out program, does current working directory work for windows?
-    -Is os and sys used?
 '''
 
 # Driving Chrome (Headless) with Selenium
