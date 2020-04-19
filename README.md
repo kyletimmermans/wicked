@@ -17,7 +17,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 _Note:_ 
 
 _1. This program does not log your username or password, it simply passes it to the Instagram log-in form_                        
-_2. The program will also **temporarily** add the line, if not already present, "127.0.0.1 localhost" to your hosts file to fix some errors_
+_2. The program will also **temporarily** add the line, if not already present, "127.0.0.1 localhost" to your hosts file to help fix some issues with Selenium_
 
 
 <p>&nbsp;</p>
