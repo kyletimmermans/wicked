@@ -69,7 +69,7 @@ chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  #
 
 alreadyThere = False  # if localhost line is already present, we don't want to mess with it
 
-def lineCheck(file, string):  # Check if hosts file is in normal spit
+def lineCheck(file, string):  # Check if hosts file is in normal spot
     try:
         with open(file, 'r') as hostsFile: #Open file in read-only
             for line in hostsFile:  # Check every line
