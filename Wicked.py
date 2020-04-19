@@ -3,12 +3,13 @@ Kyle Timmermans
 03/12/2020
 Compiled in python 3.8.2
 
-v2.1
+v2.2
 
 ToDo:
     -Error Handling - If Host File Not Found
     -Error Handling - If chromedriver Not Found in Same Folder
     -Test out program, does current working directory work for windows?
+    -Is os and sys used?
 '''
 
 # Driving Chrome (Headless) with Selenium
@@ -20,7 +21,6 @@ import getpass
 import time
 import colorama
 from colorama import Fore
-import os, sys
 from sys import platform
 from tqdm import trange
 colorama.init()  # Initialize colorama
@@ -71,6 +71,7 @@ inputCreds()  # First time enterting username/password
 chrome_options = Options()  # Initialize options
 chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
 chrome_options.add_argument('--no-sandbox')  # Helping argument
+chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off logs in windows
 
 alreadyThere = False  # if localhost line is already present, we don't want to mess with it
 
