@@ -38,6 +38,6 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added error handling for not being able to find the host file</div>
 <div>&ensp;&ensp;-Added error handling for not finding chromedriver in the same folder as itself</div>
 <div>&ensp;&ensp;-Added "Establishing Connection" print line
-<div>&ensp;&ensp;-No logging showing up in console for Windows</div>
+<div>&ensp;&ensp;-Removed logs showing up in console for Windows</div>
  
  
