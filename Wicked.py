@@ -77,21 +77,12 @@ def lineCheck(file, string):
     return False
 
 # Check OS type for correct path format and if hosts file needs to be changed
-if platform == "linux" or platform == "linux2":  # Linux
+if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have the same instructions
     # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-    if lineCheck('/etc/hosts', "127.0.0.1 localhost"):  # If its there already
+    if lineCheck("/etc/hosts", "127.0.0.1 localhost"):  # If its there already
         alreadyThere = True
     else:
-        host_file = open('/etc/hosts', "a")
-        host_file.write("127.0.0.1 localhost #Wicked" + "\n")
-        host_file.close()
-    driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder
-elif platform == "darwin":  # OSX
-    # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-    if lineCheck('/etc/hosts', "127.0.0.1 localhost"):  # If its there already
-        alreadyThere = True
-    else:
-        host_file = open('/etc/hosts', "a")
+        host_file = open("/etc/hosts", "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
     driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder
@@ -102,7 +93,7 @@ elif platform == "win32" or "win64":  # Windows
         host_file = open("C:\Windows\System32\drivers\etc\hosts", "a")
         host_file.write("127.0.0.1 localhost #Wicked" + "\n")
         host_file.close()
-    driver = webdriver.Chrome(options=chrome_options, executable_path="C:\..\chromedriver.exe")  # ./ indicates this folder
+    driver = webdriver.Chrome(options=chrome_options, executable_path="chromedriver.exe")  # No need for path, using current working directory
 
 # Check if username / password is correct
 result = None
@@ -172,25 +163,18 @@ driver.quit()  # DON'T DELETE THIS
 
 # Remove hosts addition if it was made
 if alreadyThere == False:
-    if platform == "linux" or platform == "linux2":  # Linux
-        readFile = open('/etc/hosts')
+    if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have same instructions
+        readFile = open("/etc/hosts")
         lines = readFile.readlines()
         readFile.close()
-        w = open(file, 'w')
-        w.writelines([item for item in lines[:-1]])
-        w.close()
-    elif platform == "darwin":  # OSX
-        readFile = open('/etc/hosts')
-        lines = readFile.readlines()
-        readFile.close()
-        w = open(file, 'w')
+        w = open("/etc/hosts", 'w')
         w.writelines([item for item in lines[:-1]])
         w.close()
     elif platform == "win32" or "win64":  # Windows
         readFile = open("C:\Windows\System32\drivers\etc\hosts")
         lines = readFile.readlines()
         readFile.close()
-        w = open(file, 'w')
+        w = open("C:\Windows\System32\drivers\etc\hosts", 'w')
         w.writelines([item for item in lines[:-1]])
         w.close()
 
