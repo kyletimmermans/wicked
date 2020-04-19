@@ -4,10 +4,6 @@ Kyle Timmermans
 Compiled in python 3.8.2
 
 v2.2
-
-ToDo:
-    -Error Handling - If Host File Not Found
-    -Error Handling - If chromedriver Not Found in Same Folder
 '''
 
 # Driving Chrome (Headless) with Selenium
@@ -120,6 +116,8 @@ while result is None:
         driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(username)
         driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(password)
         driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
+        print("")
+        print("Establishing Connection with Instagram...")
         time.sleep(10)  # Login Wait Grace Period
         driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]/a/img").click()  # Go to instagram.com/username
         result = "Good"  # Breakout of loop, correct login
@@ -128,7 +126,6 @@ while result is None:
         print("Username or Password is Incorrect! Try Again")
         print("")
         inputCreds()
-
 
 time.sleep(5)  # Wait after clicking on profile
 # Get Following Number
@@ -201,3 +198,5 @@ print(Fore.GREEN, " ")
 print("Results: ", Fore.RESET)
 for i in differences:
     print(i)
+
+print("")  # Separate list from command line text
