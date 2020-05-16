@@ -1,4 +1,4 @@
-![Version 2.2](http://img.shields.io/badge/version-v2.2-orange.svg)
+![Version 2.3](http://img.shields.io/badge/version-v2.2-orange.svg)
 ![Python 3.8](http://img.shields.io/badge/python-3.8-blue.svg)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
@@ -39,5 +39,7 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added error handling for not finding chromedriver in the same folder as itself</div>
 <div>&ensp;&ensp;-Added "Establishing Connection" print line
 <div>&ensp;&ensp;-Removed logs showing up in console for Windows</div>
- 
+<div>2.3:</div>
+<div>&ensp;&ensp;-Better error handling for hosts file not found</div>
+<div>&ensp;&ensp;-Syntax sugar added, small code cleanup</div> 
  
