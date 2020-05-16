@@ -1,9 +1,9 @@
 '''
 Kyle Timmermans
-03/12/2020
+05/16/20
 Compiled in python 3.8.2
 
-v2.2
+v2.3
 '''
 
 # Driving Chrome (Headless) with Selenium
@@ -49,17 +49,13 @@ print("See who's not following you back on Instagram!")
 print("This may take some time depending on how many people you follow / follow you")
 print(Fore.RESET)  # Reset text color
 
-# Init username and password
-username = "hi"
-password = "hi"
-
 # Input insta creds
 def inputCreds():
-    global username, password
     username = input("Input your Instagram username: ")
     password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
+    return [username, password]  # Return creds as list
 
-inputCreds()  # First time enterting username/password
+creds = inputCreds()  # Enter and store creds
 
 # Begin driver
 chrome_options = Options()  # Initialize options
@@ -69,7 +65,7 @@ chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  #
 
 alreadyThere = False  # if localhost line is already present, we don't want to mess with it
 
-def lineCheck(file, string):  # Check if hosts file is in normal spot
+def lineCheck(file, string):  # Check if hosts file is in normal spot, if not, show steps to fix
     try:
         with open(file, 'r') as hostsFile: #Open file in read-only
             for line in hostsFile:  # Check every line
@@ -77,7 +73,11 @@ def lineCheck(file, string):  # Check if hosts file is in normal spot
                     return True
         return False
     except FileNotFoundError:
-        print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found!")
+        print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in",  end=" ")  # append error handling to this string
+        if platform == "darwin" or platform == "linux" or platform == "linux2":
+            print("/etc/ and that the file is not hidden")
+        elif platform == "win32":
+            print("C:\Windows\System32\drivers\etc\ and that the file is not hidden")
         quit()
 
 # Check OS type for correct path format and if hosts file needs to be changed
@@ -94,7 +94,7 @@ if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX a
     except WebDriverException:
         print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
         quit()
-elif platform == "win32" or "win64":  # Windows
+elif platform == "win32":  # Windows
     if lineCheck("C:\Windows\System32\drivers\etc\hosts", "127.0.0.1 localhost"):
         alreadyThere = True
     else:
@@ -108,24 +108,23 @@ elif platform == "win32" or "win64":  # Windows
         quit()
 
 # Check if username / password is correct
-result = None
-while result is None:
+while True:
     try:
         driver.get("https://instagram.com")  # Login page
         time.sleep(5)
-        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(username)
-        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(password)
+        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(creds[0])  # Send username
+        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(creds[1])  # Send password
         driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
         print("")
         print("Establishing Connection with Instagram...")
         time.sleep(10)  # Login Wait Grace Period
         driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]/a/img").click()  # Go to instagram.com/username
-        result = "Good"  # Breakout of loop, correct login
+        break  # Breakout of loop, correct login
     except ElementClickInterceptedException:
         print("")
         print("Username or Password is Incorrect! Try Again")
         print("")
-        inputCreds()
+        creds = inputCreds()
 
 time.sleep(5)  # Wait after clicking on profile
 # Get Following Number
@@ -183,7 +182,7 @@ if alreadyThere == False:
         w = open("/etc/hosts", 'w')
         w.writelines([item for item in lines[:-1]])
         w.close()
-    elif platform == "win32" or "win64":  # Windows
+    elif platform == "win32":  # Windows
         readFile = open("C:\Windows\System32\drivers\etc\hosts")
         lines = readFile.readlines()
         readFile.close()
@@ -194,7 +193,7 @@ if alreadyThere == False:
 differences = list(set(following) - set(followers))  # Everyone in following list who's not in followers list
 
 # Print Results to Console
-print(Fore.GREEN, " ")
+print(Fore.GREEN, " ")  # Space before "Results: "
 print("Results: ", Fore.RESET)
 for i in differences:
     print(i)
