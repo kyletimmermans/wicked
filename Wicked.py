@@ -112,7 +112,11 @@ while True:
     try:
         driver.get("https://instagram.com")  # Login page
         time.sleep(5)
-        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(creds[0])  # Send username
+        try:  # Check internet connection
+            driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(creds[0])  # Send username
+        except NoSuchElementException:
+            print(Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
+            quit()
         driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(creds[1])  # Send password
         driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
         print("")
