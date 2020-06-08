@@ -41,6 +41,7 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Removed logs showing up in console for Windows</div>
 <div>v2.3:</div>
 <div>&ensp;&ensp;-Added error handling for no internet connection</div>
+ <div>&ensp;&ensp;-Added better error handling for chromedriver not found in 'Wicked.py' directory</div> 
 <div>&ensp;&ensp;-Better error handling for hosts file not found</div>
 <div>&ensp;&ensp;-Syntax sugar added, small code cleanup</div> 
  
