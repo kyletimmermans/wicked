@@ -106,6 +106,7 @@ elif platform == "win32":  # Windows
         driver = webdriver.Chrome(options=chrome_options, executable_path="chromedriver.exe")  # No need for path, using current working directory
     except WebDriverException:
         print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
+        print("Try updating your current version of Chrome, and place an updated version of chromedriver in the 'Wicked.py' directory")
         quit()
 
 # Check if username / password is correct
