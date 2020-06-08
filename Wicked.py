@@ -92,7 +92,8 @@ if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX a
     try:
         driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder for OSX/Linux
     except WebDriverException:
-        print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
+        print(Fore.RED+"Error: "+Fore.RESET+"Correct chromedriver version file not found in working directory!")
+        print("Try updating your current version of Chrome, and place an updated version of chromedriver in the 'Wicked.py' directory")
         quit()
 elif platform == "win32":  # Windows
     if lineCheck("C:\Windows\System32\drivers\etc\hosts", "127.0.0.1 localhost"):
