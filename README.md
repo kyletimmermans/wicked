@@ -46,5 +46,7 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Syntax sugar added, small code cleanup</div> 
 <div>v2.4:</div>
 <div>&ensp;&ensp;-Fixed JavascriptException: Cannot read property 'scrollTo' of null</div>
+<div>&ensp;&ensp;-Fixed issue where selenium couldn't find user profile div</div>
+<div>&ensp;&ensp;-Fixed issue with output where '1' would randomly show up
  
  
