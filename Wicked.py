@@ -2,7 +2,6 @@
 Kyle Timmermans
 05/16/20
 Compiled in python 3.8.2
-
 v2.3
 '''
 
@@ -124,7 +123,7 @@ while True:
         print("")
         print("Establishing Connection with Instagram...")
         time.sleep(10)  # Login Wait Grace Period
-        driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]/a/img").click()  # Go to instagram.com/username
+        driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Go to instagram.com/username
         break  # Breakout of loop, correct login
     except ElementClickInterceptedException:
         print("")
@@ -142,7 +141,8 @@ myAmountofFollowers = driver.find_element_by_xpath("//*[@id='react-root']/sectio
 myAmountofFollowers = int(myAmountofFollowers.replace(',', '').replace('K', ''))
 
 # JavaScript Auto Scroll Div List - To Load All Elements (prints in one line)
-scroll_script = ("var x = document.evaluate('/html/body/div[4]/div/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
+# Multi-line construct, extra quotations added. see scrolldown.js for vanilla script
+scroll_script = ("var x = document.evaluate('/html/body/div[4]/div/div/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
                  "x.scrollTo(0, x.scrollHeight);")
 
 # Send scrolls
@@ -158,7 +158,7 @@ def getList():
     soup = BeautifulSoup(html, "html.parser")
     x = soup.select("div > div > div > div > a")  # div > div > div > div > a  works best
     for i in x:
-        if i.text.strip():  # Don't print whitespace lines
+        if i.text.strip() and i.text != "1":  # Don't append whitespace, don't print just "1" randomly
             tempList.append(i.text)
     return tempList
 
