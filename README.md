@@ -48,5 +48,6 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Fixed JavascriptException: Cannot read property 'scrollTo' of null</div>
 <div>&ensp;&ensp;-Fixed issue where selenium couldn't find user profile div</div>
 <div>&ensp;&ensp;-Fixed issue with output where '1' would randomly show up
- 
+<div>v2.5:</div>
+<div>&ensp;&ensp;-Added ability to not have to enter password if the account is already public (Just username required instead)</div>
  
