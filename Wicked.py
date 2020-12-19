@@ -1,14 +1,14 @@
 '''
 Kyle Timmermans
-05/16/20
+12/19/20
 Compiled in python 3.8.2
-v2.3
+v2.5
 '''
 
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import *
+from selenium.common.exceptions import WebDriverException, NoSuchElementException, ElementClickInterceptedException
 from bs4 import BeautifulSoup
 import getpass
 import time
@@ -54,15 +54,36 @@ def inputCreds():
     password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
     return [username, password]  # Return creds as list
 
+print("If your profile is public, you can just leave the password field blank")
 creds = inputCreds()  # Enter and store creds
 
 # Begin driver
 chrome_options = Options()  # Initialize options
 chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
+chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
 chrome_options.add_argument('--no-sandbox')  # Helping argument
 chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off logs in windows
 
 alreadyThere = False  # if localhost line is already present, we don't want to mess with it
+
+# Remove hosts addition if it was made, needed for everytime an exception interrupts program
+# So we can remove it even when it fails, e.g. is an exception also does quit()
+def hostsRemoval(alreadyThere):
+    if alreadyThere == False:
+        if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have same instructions
+            readFile = open("/etc/hosts")
+            lines = readFile.readlines()
+            readFile.close()
+            w = open("/etc/hosts", 'w')
+            w.writelines([item for item in lines[:-1]])
+            w.close()
+        elif platform == "win32":  # Windows
+            readFile = open("C:\Windows\System32\drivers\etc\hosts")
+            lines = readFile.readlines()
+            readFile.close()
+            w = open("C:\Windows\System32\drivers\etc\hosts", 'w')
+            w.writelines([item for item in lines[:-1]])
+            w.close()
 
 def lineCheck(file, string):  # Check if hosts file is in normal spot, if not, show steps to fix
     try:
@@ -72,7 +93,7 @@ def lineCheck(file, string):  # Check if hosts file is in normal spot, if not, s
                     return True
         return False
     except FileNotFoundError:
-        print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in",  end=" ")  # append error handling to this string
+        print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in", end=' ')  # append error handling to this string
         if platform == "darwin" or platform == "linux" or platform == "linux2":
             print("/etc/ and that the file is not hidden")
         elif platform == "win32":
@@ -90,9 +111,13 @@ if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX a
         host_file.close()
     try:
         driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # ./ indicates this folder for OSX/Linux
+        user_agent = driver.execute_script("return navigator.userAgent;").replace("Headless", "")  # Get the user agent and remove the word "Headless"
+        chrome_options.add_argument(f'user-agent={user_agent}')  # Update our options with the safe user agent
+        driver = webdriver.Chrome(options=chrome_options, executable_path="./chromedriver")  # Driver re-initialized with safe user agent
     except WebDriverException:
         print(Fore.RED+"Error: "+Fore.RESET+"Correct chromedriver version file not found in working directory!")
         print("Try updating your current version of Chrome, and place an updated version of chromedriver in the 'Wicked.py' directory")
+        hostsRemoval(alreadyThere)
         quit()
 elif platform == "win32":  # Windows
     if lineCheck("C:\Windows\System32\drivers\etc\hosts", "127.0.0.1 localhost"):
@@ -103,46 +128,102 @@ elif platform == "win32":  # Windows
         host_file.close()
     try:
         driver = webdriver.Chrome(options=chrome_options, executable_path="chromedriver.exe")  # No need for path, using current working directory
+        user_agent = driver.execute_script("return navigator.userAgent;").replace("Headless", "")  # Get the user agent and remove the word "Headless"
+        chrome_options.add_argument(f'user-agent={user_agent}')  # Update our options with the safe user agent
+        driver = webdriver.Chrome(options=chrome_options, executable_path="chromedriver.exe")  # Driver re-initialized with safe user agent
     except WebDriverException:
         print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
         print("Try updating your current version of Chrome, and place an updated version of chromedriver in the 'Wicked.py' directory")
+        hostsRemoval(alreadyThere)
         quit()
 
-# Check if username / password is correct
+# Check if username / password is correct and do public account checks if need be
 while True:
-    try:
-        driver.get("https://instagram.com")  # Login page
-        time.sleep(5)
-        try:  # Check internet connection
-            driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[2]/div/label/input").send_keys(creds[0])  # Send username
+    # If they don't have a public link, they have to do password logic
+    if len(creds[1]) > 0:  # If private, they should have put in their password
+        try:
+            driver.get("https://www.instagram.com/accounts/login/")  # Login page
+            time.sleep(5)
+            try:  # Check internet connection
+                driver.find_element_by_xpath("//*[@id='loginForm']/div/div[1]/div/label/input").send_keys(creds[0])  # Send username
+            except NoSuchElementException:
+                print(Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
+                hostsRemoval(alreadyThere)
+                quit()
+            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[2]/div/label/input").send_keys(creds[1])  # Send password
+            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[3]/button/div").click()  # Login button click
+            print("")
+            print("Establishing Connection with Instagram...")
+            time.sleep(10)  # Login Wait Grace Period
+            driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Open profile pic modal (top right)
+            time.sleep(0.5)  # Wait for modal to pop up
+            driver.find_element_by_xpath("/html/body/div[1]/section/nav/div[2]/div/div/div[3]/div/div[5]/div[2]/div[2]/div[2]/a[1]/div/div[2]/div/div/div/div").click()  # Go to their profile page from profile pic modal
+            time.sleep(5) # Wait after clicking on profile
+            break  # Breakout of loop, there is a correct login
+        except ElementClickInterceptedException:
+            print("")
+            print("Username or Password is Incorrect! Try Again")
+            print("")
+            creds = inputCreds()
+    else:  # This section is for public profiles (Check if public, if acc exsists, and check internet)
+        public_link = "https://instagram.com/" + creds[0]
+        try:  # Check internet connection by grabbing instagram logo on page
+            driver.get(public_link)  # Profile page
+            time.sleep(5) # Wait after clicking on profile
+            driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[1]/a/div/div/img")  #
         except NoSuchElementException:
             print(Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
+            hostsRemoval(alreadyThere)
             quit()
-        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[3]/div/label/input").send_keys(creds[1])  # Send password
-        driver.find_element_by_xpath("//*[@id='react-root']/section/main/article/div[2]/div[1]/div/form/div[4]/button").click()  # Login button click
+        try:  # Check if account exists
+            driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/div[1]/h2").text  # Their profile username
+        except NoSuchElementException:  # If we don't see a normal profile page with the username element, account does not exist
+            print("")
+            print("Username does not exist! Try Again!")
+            print("")
+            creds = inputCreds()
+            continue  # Go back to top of while loop
+        try:  # Check if account is public (If following list is un-clickable, then account is private)
+            driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/span").click()
+            driver.execute_script("window.history.go(-1)")  # Close out of 'Following' Modal
+            time.sleep(2)
+        except WebDriverException:
+            print("")
+            print("This account is not public! Set your account to public or enter your password for your account.")
+            print("")
+            creds = inputCreds()
+            continue
         print("")
-        print("Establishing Connection with Instagram...")
-        time.sleep(10)  # Login Wait Grace Period
-        driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Go to instagram.com/username
-        break  # Breakout of loop, correct login
-    except ElementClickInterceptedException:
-        print("")
-        print("Username or Password is Incorrect! Try Again")
-        print("")
-        creds = inputCreds()
+        print("Establishing Connection with Instagram...")  # If everything works
+        break  # We have a public page that exists, breakout of while loop
 
-time.sleep(5)  # Wait after clicking on profile
 # Get Following Number
 myAmountofFollowing = driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").text  # Used to track javascript passes
-myAmountofFollowing = int(myAmountofFollowing.replace(',', '').replace('K', ''))  # Make into int and remove commas and 'K' (thousand) if present
+if myAmountofFollowing.find(',') != -1:  # Handle for commas and K in number, can't have both in one number
+    myAmountofFollowing = int(myAmountofFollowing.replace(',', ''))  # Make into int and remove commas if present
+elif myAmountofFollowing.find('K') != -1:  # If K (thousand) is present
+    myAmountofFollowing = int(myAmountofFollowing.replace('K', '') + "000")  # Remove K and add 000 to make it a usable thousand number
+elif myAmountofFollowing.find('M') != -1:  # If account has a million or more followers, just quit
+    print("")
+    print("This account has >= 1 Million followers, you don't want to do that to your computer")
+    hostsRemoval(alreadyThere)
+    quit()
 
 # Get Followers Number
 myAmountofFollowers = driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[2]/a/span").text
-myAmountofFollowers = int(myAmountofFollowers.replace(',', '').replace('K', ''))
+if myAmountofFollowers.find(',') != -1:  # Handle for commas and K in number, can't have both in one number
+    myAmountofFollowers = int(myAmountofFollowers.replace(',', ''))  # Make into int and remove commas if present
+elif myAmountofFollowers.find('K') != -1:  # If K (thousand) is present
+    myAmountofFollowers = int(myAmountofFollowers.replace('K', '') + "000")  # Remove K and add 000 to make it a usable thousand number
+elif myAmountofFollowers.find('M') != -1:  # If account has a million or more followers, just quit
+    print("")
+    print("This account follows >= 1 Million people, you don't want to do that to your computer")
+    hostsRemoval(alreadyThere)
+    quit()
 
 # JavaScript Auto Scroll Div List - To Load All Elements (prints in one line)
 # Multi-line construct, extra quotations added. see scrolldown.js for vanilla script
-scroll_script = ("var x = document.evaluate('/html/body/div[4]/div/div/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
+scroll_script = ("var x = document.evaluate('/html/body/div[5]/div/div/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
                  "x.scrollTo(0, x.scrollHeight);")
 
 # Send scrolls
@@ -156,12 +237,13 @@ def getList():
     tempList = []
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
-    x = soup.select("div > div > div > div > a")  # div > div > div > div > a  works best
+    x = soup.select("body > div > div > div > div > ul > div > li > div > div > div > div > span > a")  # Line to usernames in the HTML
     for i in x:
         if i.text.strip() and i.text != "1":  # Don't append whitespace, don't print just "1" randomly
             tempList.append(i.text)
     return tempList
 
+# Run through following and followers lists and append as we go
 time.sleep(2)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").click()  # Open 'Following' Modal
 time.sleep(2)
@@ -179,28 +261,13 @@ followers = getList()  # Followers List
 
 driver.quit()  # DON'T DELETE THIS
 
-# Remove hosts addition if it was made
-if alreadyThere == False:
-    if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have same instructions
-        readFile = open("/etc/hosts")
-        lines = readFile.readlines()
-        readFile.close()
-        w = open("/etc/hosts", 'w')
-        w.writelines([item for item in lines[:-1]])
-        w.close()
-    elif platform == "win32":  # Windows
-        readFile = open("C:\Windows\System32\drivers\etc\hosts")
-        lines = readFile.readlines()
-        readFile.close()
-        w = open("C:\Windows\System32\drivers\etc\hosts", 'w')
-        w.writelines([item for item in lines[:-1]])
-        w.close()
+hostsRemoval(alreadyThere) # Final chance to remove it
 
-differences = list(set(following) - set(followers))  # Everyone in following list who's not in followers list
+differences = list(set(following) - set(followers))  # Everyone in following list who's not in followers list (set logic)
 
 # Print Results to Console
 print(Fore.GREEN, " ")  # Space before "Results: "
-print("Results: ", Fore.RESET)
+print("Results (" + str(len(differences)) + "): " + Fore.RESET)  # Number of people noted as well
 for i in differences:
     print(i)
 
