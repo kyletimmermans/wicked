@@ -263,7 +263,10 @@ driver.quit()  # DON'T DELETE THIS
 
 hostsRemoval(alreadyThere) # Final chance to remove it
 
-differences = list(set(following) - set(followers))  # Everyone in following list who's not in followers list (set logic)
+differences = list(set(following) - set(followers))  # Remove the people in my followers list from the following list (set logic)
+# Note to self: The results number is not necessarily just following - followers, because there are people that follow
+# me that I don't follow back. And they would be removed from the followers number. We are essentially just removing anything
+# any dupes if we put the lists together, b/c a dupe means that we are both following each other
 
 # Print Results to Console
 print(Fore.GREEN, " ")  # Space before "Results: "
