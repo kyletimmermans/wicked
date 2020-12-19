@@ -52,3 +52,4 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added ability to not have to enter password if the account is already public (Just username required instead)</div>
 <div>&ensp;&ensp;-Fixed issue with accounts that have a 'K' or 'M' in their following/followers number</div>
 <div>&ensp;&ensp;-Login page needed to have 'react-root' replaced with 'loginForm'</div>
+<div>&ensp;&ensp;-Automatically remove "Headless" from user agent string for the driver (Instagram can block headless ones)</div>
