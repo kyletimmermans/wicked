@@ -7,7 +7,7 @@
 This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. This program does not use the Instagram API.
 
 ## How to run it:
-1. In order to make this work, you must have python3 on your system.
+1. In order to make this work, you must have python3 on your system
 2. Run: **pip3 install -r requirements.txt**
 3. Download the [Chrome Webdriver](https://chromedriver.chromium.org/downloads "Chrome Webdriver")
  for the your current version of Chrome and for your respective system (Windows, MacOSX, Linux) and place it in the same folder as _Wicked.py_
