@@ -137,65 +137,32 @@ elif platform == "win32":  # Windows
         hostsRemoval(alreadyThere)
         quit()
 
-# Check if username / password is correct and do public account checks if need be
+# Check if username / password is correct
 while True:
-    # If they don't have a public link, they have to do password logic
-    if len(creds[1]) > 0:  # If private, they should have put in their password
-        try:
-            driver.get("https://www.instagram.com/accounts/login/")  # Login page
-            time.sleep(5)
-            try:  # Check internet connection
-                driver.find_element_by_xpath("//*[@id='loginForm']/div/div[1]/div/label/input").send_keys(creds[0])  # Send username
-            except NoSuchElementException:
-                print(Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
-                hostsRemoval(alreadyThere)
-                quit()
-            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[2]/div/label/input").send_keys(creds[1])  # Send password
-            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[3]/button/div").click()  # Login button click
-            print("")
-            print("Establishing Connection with Instagram...")
-            time.sleep(10)  # Login Wait Grace Period
-            driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Open profile pic modal (top right)
-            time.sleep(0.5)  # Wait for modal to pop up
-            driver.find_element_by_xpath("/html/body/div[1]/section/nav/div[2]/div/div/div[3]/div/div[5]/div[2]/div[2]/div[2]/a[1]/div/div[2]/div/div/div/div").click()  # Go to their profile page from profile pic modal
-            time.sleep(5) # Wait after clicking on profile
-            break  # Breakout of loop, there is a correct login
-        except ElementClickInterceptedException:
-            print("")
-            print("Username or Password is Incorrect! Try Again")
-            print("")
-            creds = inputCreds()
-    else:  # This section is for public profiles (Check if public, if acc exsists, and check internet)
-        public_link = "https://instagram.com/" + creds[0]
-        try:  # Check internet connection by grabbing instagram logo on page
-            driver.get(public_link)  # Profile page
-            time.sleep(5) # Wait after clicking on profile
-            driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[1]/a/div/div/img")  #
+    try:
+        driver.get("https://www.instagram.com/accounts/login/")  # Login page
+        time.sleep(5)
+        try:  # Check internet connection
+            driver.find_element_by_xpath("//*[@id='loginForm']/div/div[1]/div/label/input").send_keys(creds[0])  # Send username
         except NoSuchElementException:
             print(Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
             hostsRemoval(alreadyThere)
             quit()
-        try:  # Check if account exists
-            driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/div[1]/h2").text  # Their profile username
-        except NoSuchElementException:  # If we don't see a normal profile page with the username element, account does not exist
-            print("")
-            print("Username does not exist! Try Again!")
-            print("")
-            creds = inputCreds()
-            continue  # Go back to top of while loop
-        try:  # Check if account is public (If following list is un-clickable, then account is private)
-            driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/span").click()
-            driver.execute_script("window.history.go(-1)")  # Close out of 'Following' Modal
-            time.sleep(2)
-        except WebDriverException:
-            print("")
-            print("This account is not public! Set your account to public or enter your password for your account.")
-            print("")
-            creds = inputCreds()
-            continue
+        driver.find_element_by_xpath("//*[@id='loginForm']/div/div[2]/div/label/input").send_keys(creds[1])  # Send password
+        driver.find_element_by_xpath("//*[@id='loginForm']/div/div[3]/button/div").click()  # Login button click
         print("")
-        print("Establishing Connection with Instagram...")  # If everything works
-        break  # We have a public page that exists, breakout of while loop
+        print("Establishing Connection with Instagram...")
+        time.sleep(10)  # Login Wait Grace Period
+        driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Open profile pic modal (top right)
+        time.sleep(0.5)  # Wait for modal to pop up
+        driver.find_element_by_xpath("/html/body/div[1]/section/nav/div[2]/div/div/div[3]/div/div[5]/div[2]/div[2]/div[2]/a[1]/div/div[2]/div/div/div/div").click()  # Go to their profile page from profile pic modal
+        time.sleep(5) # Wait after clicking on profile
+        break  # Breakout of loop, there is a correct login
+    except ElementClickInterceptedException:
+        print("")
+        print("Username or Password is Incorrect! Try Again")
+        print("")
+        creds = inputCreds()
 
 # Get Following Number
 myAmountofFollowing = driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").text  # Used to track javascript passes
