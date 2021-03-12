@@ -1,5 +1,6 @@
 ![Version 2.5](http://img.shields.io/badge/version-v2.5-orange.svg)
 ![Python 3.8](http://img.shields.io/badge/python-3.8-blue.svg)
+![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=red)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
 # <div align="center">Wicked</div>
