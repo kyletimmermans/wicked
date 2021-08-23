@@ -1,7 +1,7 @@
 '''
 Kyle Timmermans
 Aug 23, 2021
-Compiled in python 3.9.6
+Compiled in Python 3.9.6
 v3.0
 '''
 
