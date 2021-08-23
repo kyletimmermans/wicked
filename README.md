@@ -58,5 +58,5 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Fixed bs4 list iterator</div>
 <div>&ensp;&ensp;-Logic for (following - followers) detailed in comments</div>
 <div>v3.0</div
-<div>&ensp;&ensp;-Using HTTPS?</div>
+<div>&ensp;&ensp;-Using TLSv1.2</div>
 <div>&ensp;&ensp;-Enabled MFA Support</div>
