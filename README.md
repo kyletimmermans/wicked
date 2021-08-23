@@ -62,3 +62,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added MFA Support</div>
 <div>&ensp;&ensp;-Added better correct-login checking</div>
 <div>&ensp;&ensp;-Added v3 to the ASCII art title</div>
+<div>&ensp;&ensp;-Removed JavaScript that scrolls div and sends scroll key instead</div>
