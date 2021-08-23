@@ -57,7 +57,7 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Automatically remove "Headless" from user agent string for the driver (Instagram can block headless ones)</div>
 <div>&ensp;&ensp;-Fixed bs4 list iterator</div>
 <div>&ensp;&ensp;-Logic for (following - followers) detailed in comments</div>
-<div>v3.0</div
+<div>v3.0:</div>
 <div>&ensp;&ensp;-Using TLSv1.2 to send information</div>
 <div>&ensp;&ensp;-Added MFA Support</div>
 <div>&ensp;&ensp;-Added better correct-login checking</div>
