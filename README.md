@@ -12,7 +12,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 2. Run: **pip3 install -r requirements.txt**
 3. Download the [Chrome Webdriver](https://chromedriver.chromium.org/downloads "Chrome Webdriver")
  for the your current version of Chrome and for your respective system (Windows, MacOSX, Linux) and place it in the same folder / directory as _Wicked.py_
-4. Finally, run with admin/root permissions **python3 Wicked.py**
+4. Finally, run with admin/root permissions **sudo python3 Wicked.py**
 5. Input your username and password for Instagram, and wait a few minutes for it to print to the console. Run time is dependant on how many people you follow / follow you
 
 _Note:_ 
@@ -62,4 +62,3 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added MFA Support</div>
 <div>&ensp;&ensp;-Added better correct-login checking</div>
 <div>&ensp;&ensp;-Added v3 to the ASCII art title</div>
- 
