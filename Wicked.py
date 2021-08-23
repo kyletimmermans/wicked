@@ -46,7 +46,7 @@ print("\n")
 print("Created by: @KyleTimmermans")
 print("ASCII Art by jgs\n")
 print("See who's not following you back on Instagram!")
-print("This may take some time depending on how many people you follow / follow you\n")
+print("This may take some time depending on how many people you follow / follow you")
 print(Fore.RESET)  # Reset text color
 
 # Input insta creds
@@ -59,7 +59,7 @@ creds = inputCreds()  # Enter and store creds
 
 # Begin driver
 chrome_options = Options()  # Initialize options
-#chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
+chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
 chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
 chrome_options.add_argument("--no-sandbox")  # Helping argument
 chrome_options.add_argument("--tls1.2")  # Encrypt info using TLS v1.2
@@ -158,7 +158,7 @@ while True:
     except NoSuchElementException:  # If error not found, successful login
         break
     else:
-        print("\nUsername or Password is Incorrect! Try Again\n")
+        print("Username or Password is Incorrect! Try Again\n")
         creds = inputCreds()
 
 # MFA Support
@@ -212,14 +212,18 @@ elif myAmountofFollowers.find('M') != -1:  # If account has a million or more fo
     quit()
 
 # Send scrolls
-def jsLoop(size):
-    coords = driver.execute_script("return [window.innerWidth / 2, window.innerHeight / 2];")  # Center of screen / modal
-    print(coords)
-    action(driver).move_by_offset(coords[0]+10,coords[1]).perform()  # Physical mouse does not move, the selenium one does (invisible)
-    time.sleep(2)
-    action(driver).context_click().perform()  # Right click, not left. Prevents redirecting but allows scrolling
-    time.sleep(2)
-    for i in trange(int(size * 0.230)):  # Only 0.115? percent of total follow count = sufficient loops, trange prints progressbar
+def scroll_loop(size, type):
+    if type == "following":
+        following_modal = driver.find_elements_by_xpath("//*[contains(text(), 'People')]")[0]  # 'Following' used everywhere, do not use
+        action(driver).move_by_offset(following_modal.location['x']+190,following_modal.location['y']+49).perform()
+        action(driver).context_click().perform()  # Right click, not left. Prevents redirecting but allows scrolling
+        time.sleep(2)
+    elif type == "followers":
+        followers_modal = driver.find_elements_by_xpath("//*[contains(text(), 'Followers')]")[0]
+        action(driver).move_by_offset(followers_modal.location['x']+155,followers_modal.location['y']+50).perform()
+        action(driver).context_click().perform()
+        time.sleep(2)
+    for i in trange(int(size / 2.7)):  # total follow count / 2.7 = sufficient loops to get everything, trange prints progressbar
         action(driver).context_click().perform()
         action(driver).send_keys(Keys.PAGE_DOWN).perform();
         time.sleep(0.5)
@@ -237,18 +241,20 @@ def getList():
 
 # Run through following and followers lists and append as we go
 time.sleep(2)
+driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[2]/a").click()  # Open 'Followers' Modal
+print("\nPart 1/2")
+time.sleep(2)
+scroll_loop(myAmountofFollowers, "followers")
+followers = getList()  # Followers List
+time.sleep(2)
+driver.execute_script("window.history.go(-1)")  # Close out of 'Followers' Modal
+time.sleep(2)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").click()  # Open 'Following' Modal
 time.sleep(2)
-print("\nPart 1/2")
-jsLoop(myAmountofFollowing)
-following = getList()  # Following List
-time.sleep(2)
-driver.execute_script("window.history.go(-1)")  # Close out of 'Following' Modal
-time.sleep(2)
-driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[2]/a").click()  # Open 'Followers' Modal
 print("Part 2/2")
-jsLoop(myAmountofFollowers)
-followers = getList()  # Followers List
+scroll_loop(myAmountofFollowing, "following")
+following = getList()  # Following List
+
 
 driver.quit()  # DON'T DELETE THIS
 
@@ -266,5 +272,3 @@ print(Fore.GREEN, " ")  # Space before "Results: "
 print("Results (" + str(len(differences)) + "): " + Fore.RESET)  # Number of people noted as well
 for i in differences:
     print(i)
-
-print("\n")  # Separate list from command line text
