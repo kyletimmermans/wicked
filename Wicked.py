@@ -1,14 +1,16 @@
 '''
 Kyle Timmermans
-12/19/20
-Compiled in python 3.8.2
-v2.5
+Aug 23, 2021
+Compiled in python 3.9.6
+v3.0
 '''
 
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import WebDriverException, NoSuchElementException, ElementClickInterceptedException
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains as action
 from bs4 import BeautifulSoup
 import getpass
 import time
@@ -19,20 +21,20 @@ from tqdm import trange
 colorama.init()  # Initialize colorama
 
 print(Fore.GREEN) # Make ASCII Art and Banner Green
-print(" ")
+print("\n")
 print("       .*.                                       ")
 print("     *' + '*      ,       ,                      ")
 print("      *'|'*       |`;`;`;`|                      ")
 print("        |         |:.'.'.'|                      ")
 print("        |         |:.:.:.:|                      ")
-print("        |         |::....:|                                                    _________ _______  _        _______  ______  ")
-print("        |        /`   / ` \                                           |\     /|\__   __/(  ____ \| \    /\(  ____ \(  __  \ ")
-print("        |       (   .' ^ \^)                                          | )   ( |   ) (   | (    \/|  \  / /| (    \/| (  \  )")
-print("        |_.,   (    \    -/(            You're" + "                        | | _ | |   | |   | |      |  (_/ / | (__    | |   ) |")
-print("     ,~`|   `~./     )._=/  )  ,,            gonna"+ "                    | |( )| |   | |   | |      |   _ (  |  __)   | |   | |")
-print("    {   |     (       )|   (.~`  `~,             be"+ "                   | || || |   | |   | |      |  ( \ \ | (      | |   ) |")
-print("    {   |      \   _.'  \   )       }             pop-u-lar!"+"          | () () |___) (___| (____/\|  /  \ \| (____/\| (__/  )")
-print("    ;   |       ;`\      `)-`       }     _.._   "+"                     (_______)\_______/(_______/|_/    \/(_______/(______/ ")
+print("        |         |::....:|                                                    _________ _______  _        _______  ______               ______")
+print("        |        /`   / ` \                                           |\     /|\__   __/(  ____ \| \    /\(  ____ \(  __  \    |\     /|/ ___  \ ")
+print("        |       (   .' ^ \^)                                          | )   ( |   ) (   | (    \/|  \  / /| (    \/| (  \  )   | )   ( |\/   \  \\")
+print("        |_.,   (    \    -/(            You're" + "                        | | _ | |   | |   | |      |  (_/ / | (__    | |   ) |   | |   | |   ___) /")
+print("     ,~`|   `~./     )._=/  )  ,,            gonna"+ "                    | |( )| |   | |   | |      |   _ (  |  __)   | |   | |   ( (   ) )  (___ (")
+print("    {   |     (       )|   (.~`  `~,             be"+ "                   | || || |   | |   | |      |  ( \ \ | (      | |   ) |    \ \_/ /       ) \\")
+print("    {   |      \   _.'  \   )       }             pop-u-lar!"+"          | () () |___) (___| (____/\|  /  \ \| (____/\| (__/  )     \   /  /\___/  /")
+print("    ;   |       ;`\      `)-`       }     _.._   "+"                     (_______)\_______/(_______/|_/    \/(_______/(______/       \_/   \______/ ")
 print("     '.(\,     ;   `\    / `.       }__.-'__.-'  ")
 print("      ( (/-;~~`;     `\_/    ;   .'`  _.-'       ")
 print("      `/|\/   .'\.    /o\   ,`~~`~~~~`           ")
@@ -40,12 +42,11 @@ print("       \| ` .'   \'--'   '-`                     ")
 print("        |--',==~~`)       (`~~==,_               ")
 print("        ,=~`      `-.     /       `~=,           ")
 print("     ,=`             `-._/            `=,        ")
-print(" ")
+print("\n")
 print("Created by: @KyleTimmermans")
-print("ASCII Art by jgs")
-print(" ")
+print("ASCII Art by jgs\n")
 print("See who's not following you back on Instagram!")
-print("This may take some time depending on how many people you follow / follow you")
+print("This may take some time depending on how many people you follow / follow you\n")
 print(Fore.RESET)  # Reset text color
 
 # Input insta creds
@@ -54,14 +55,14 @@ def inputCreds():
     password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
     return [username, password]  # Return creds as list
 
-print("If your profile is public, you can just leave the password field blank")
 creds = inputCreds()  # Enter and store creds
 
 # Begin driver
 chrome_options = Options()  # Initialize options
-chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
+#chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
 chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
-chrome_options.add_argument('--no-sandbox')  # Helping argument
+chrome_options.add_argument("--no-sandbox")  # Helping argument
+chrome_options.add_argument("--tls1.2")  # Encrypt info using TLS v1.2
 chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off logs in windows
 
 alreadyThere = False  # if localhost line is already present, we don't want to mess with it
@@ -140,6 +141,7 @@ elif platform == "win32":  # Windows
 # Check if username / password is correct
 while True:
     try:
+        print("\nEstablishing Connection with Instagram...\n")
         driver.get("https://www.instagram.com/accounts/login/")  # Login page
         time.sleep(5)
         try:  # Check internet connection
@@ -150,19 +152,42 @@ while True:
             quit()
         driver.find_element_by_xpath("//*[@id='loginForm']/div/div[2]/div/label/input").send_keys(creds[1])  # Send password
         driver.find_element_by_xpath("//*[@id='loginForm']/div/div[3]/button/div").click()  # Login button click
-        print("")
-        print("Establishing Connection with Instagram...")
-        time.sleep(10)  # Login Wait Grace Period
-        driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Open profile pic modal (top right)
-        time.sleep(0.5)  # Wait for modal to pop up
-        driver.find_element_by_xpath("/html/body/div[1]/section/nav/div[2]/div/div/div[3]/div/div[5]/div[2]/div[2]/div[2]/a[1]/div/div[2]/div/div/div/div").click()  # Go to their profile page from profile pic modal
-        time.sleep(5) # Wait after clicking on profile
-        break  # Breakout of loop, there is a correct login
-    except ElementClickInterceptedException:
-        print("")
-        print("Username or Password is Incorrect! Try Again")
-        print("")
+        time.sleep(7)  # Login Wait Grace Period
+        driver.find_element_by_id("slfErrorAlert")
+        time.sleep(3)
+    except NoSuchElementException:  # If error not found, successful login
+        break
+    else:
+        print("\nUsername or Password is Incorrect! Try Again\n")
         creds = inputCreds()
+
+# MFA Support
+while True:
+    try:
+        mfa_check = driver.find_element_by_xpath("/html/body/div[1]/section/main/div/div/div[1]/div/div").text
+    except NoSuchElementException:
+        break
+    if "code" in mfa_check:  # Code needed
+        mfa_code = input("Input MFA code: ")
+        driver.find_element_by_xpath("/html/body/div[1]/section/main/div/div/div[1]/div/form/div[1]/div/label/input").send_keys(mfa_code)
+        time.sleep(2)
+        driver.find_element_by_xpath("/html/body/div[1]/section/main/div/div/div[1]/div/form/div[2]/button").click()
+        time.sleep(5)
+    else:  # Must be a call then, if not code
+        print("Waiting for MFA call to finish successfully...")
+        time.sleep(10)  # Wait for finished call
+    try:
+        driver.find_element_by_id("twoFactorErrorAlert")
+    except NoSuchElementException:  # If no error, return
+        break
+    else:  # If we had no error, the error was found, go back to top
+        print("MFA code incorrect or MFA call not successful, Try Again.\n")
+
+# Click on profile once logged in
+driver.find_element_by_xpath("//*[@id='react-root']/section/nav/div[2]/div/div/div[3]/div/div[5]").click()  # Open profile pic modal (top right)
+time.sleep(0.5)  # Wait for modal to pop up
+driver.find_element_by_xpath("/html/body/div[1]/section/nav/div[2]/div/div/div[3]/div/div[5]/div[2]/div[2]/div[2]/a[1]/div/div[2]/div/div/div/div").click()  # Go to their profile page from profile pic modal
+time.sleep(5) # Wait after clicking on profile
 
 # Get Following Number
 myAmountofFollowing = driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").text  # Used to track javascript passes
@@ -171,8 +196,7 @@ if myAmountofFollowing.find(',') != -1:  # Handle for commas and K in number, ca
 elif myAmountofFollowing.find('K') != -1:  # If K (thousand) is present
     myAmountofFollowing = int(myAmountofFollowing.replace('K', '') + "000")  # Remove K and add 000 to make it a usable thousand number
 elif myAmountofFollowing.find('M') != -1:  # If account has a million or more followers, just quit
-    print("")
-    print("This account has >= 1 Million followers, you don't want to do that to your computer")
+    print("\nThis account has >= 1 Million followers, you don't want to do that to your computer")
     hostsRemoval(alreadyThere)
     quit()
 
@@ -183,20 +207,21 @@ if myAmountofFollowers.find(',') != -1:  # Handle for commas and K in number, ca
 elif myAmountofFollowers.find('K') != -1:  # If K (thousand) is present
     myAmountofFollowers = int(myAmountofFollowers.replace('K', '') + "000")  # Remove K and add 000 to make it a usable thousand number
 elif myAmountofFollowers.find('M') != -1:  # If account has a million or more followers, just quit
-    print("")
-    print("This account follows >= 1 Million people, you don't want to do that to your computer")
+    print("\nThis account follows >= 1 Million people, you don't want to do that to your computer")
     hostsRemoval(alreadyThere)
     quit()
 
-# JavaScript Auto Scroll Div List - To Load All Elements (prints in one line)
-# Multi-line construct, extra quotations added. see scrolldown.js for vanilla script
-scroll_script = ("var x = document.evaluate('/html/body/div[5]/div/div/div[2]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
-                 "x.scrollTo(0, x.scrollHeight);")
-
 # Send scrolls
 def jsLoop(size):
-    for i in trange(int(size * 0.115)):  # Only 0.115 percent of total follow count = sufficient loops, trange prints progressbar
-        driver.execute_script(scroll_script)
+    coords = driver.execute_script("return [window.innerWidth / 2, window.innerHeight / 2];")  # Center of screen / modal
+    print(coords)
+    action(driver).move_by_offset(coords[0]+10,coords[1]).perform()  # Physical mouse does not move, the selenium one does (invisible)
+    time.sleep(2)
+    action(driver).context_click().perform()  # Right click, not left. Prevents redirecting but allows scrolling
+    time.sleep(2)
+    for i in trange(int(size * 0.230)):  # Only 0.115? percent of total follow count = sufficient loops, trange prints progressbar
+        action(driver).context_click().perform()
+        action(driver).send_keys(Keys.PAGE_DOWN).perform();
         time.sleep(0.5)
 
 # Used to get list of following and followers
@@ -214,8 +239,7 @@ def getList():
 time.sleep(2)
 driver.find_element_by_xpath("//*[@id='react-root']/section/main/div/header/section/ul/li[3]/a/span").click()  # Open 'Following' Modal
 time.sleep(2)
-print("")
-print("Part 1/2")
+print("\nPart 1/2")
 jsLoop(myAmountofFollowing)
 following = getList()  # Following List
 time.sleep(2)
@@ -231,6 +255,7 @@ driver.quit()  # DON'T DELETE THIS
 hostsRemoval(alreadyThere) # Final chance to remove it
 
 # differences = whoIFollow - (myFollowers - peopleIdontFollowBack)
+# People who I follow who are not my followers
 differences = list(set(following) - set(followers))  # Remove the people in my followers list from the following list (set logic)
 # Note to self: The results number is not necessarily just following - followers, because there are people that follow
 # me that I don't follow back. And they would be removed from the followers number. We are essentially just removing anything,
@@ -242,4 +267,4 @@ print("Results (" + str(len(differences)) + "): " + Fore.RESET)  # Number of peo
 for i in differences:
     print(i)
 
-print("")  # Separate list from command line text
+print("\n")  # Separate list from command line text
