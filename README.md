@@ -1,5 +1,5 @@
-![Version 2.5](http://img.shields.io/badge/version-v2.5-orange.svg)
-![Python 3.8](http://img.shields.io/badge/python-3.8-blue.svg)
+![Version 3.0](http://img.shields.io/badge/version-v3.0-orange.svg)
+![Python 3.9](http://img.shields.io/badge/python-3.9-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=red)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
@@ -56,3 +56,6 @@ _2. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Automatically remove "Headless" from user agent string for the driver (Instagram can block headless ones)</div>
 <div>&ensp;&ensp;-Fixed bs4 list iterator</div>
 <div>&ensp;&ensp;-Logic for (following - followers) detailed in comments</div>
+<div>v3.0</div
+<div>&ensp;&ensp;-Using HTTPS?</div>
+<div>&ensp;&ensp;-Enabled MFA Support</div>
