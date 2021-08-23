@@ -59,4 +59,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Logic for (following - followers) detailed in comments</div>
 <div>v3.0</div
 <div>&ensp;&ensp;-Using TLSv1.2 to send information</div>
-<div>&ensp;&ensp;-Enabled MFA Support</div>
+<div>&ensp;&ensp;-Added MFA Support</div>
