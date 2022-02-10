@@ -1,4 +1,4 @@
-![Version 3.0](http://img.shields.io/badge/version-v3.0-orange.svg)
+![Version 3.1](http://img.shields.io/badge/version-v3.1-orange.svg)
 ![Python 3.9](http://img.shields.io/badge/python-3.9-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -63,3 +63,8 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added better correct-login checking</div>
 <div>&ensp;&ensp;-Added v3 to the ASCII art title</div>
 <div>&ensp;&ensp;-Removed JavaScript that scrolls div (was always changing) and sends scroll key instead</div>
+<div>v3.1:</div>
+<div>&ensp;&ensp;-Added if __name__ == "__main__":</div>
+<div>&ensp;&ensp;-Refactor / Moved code into main</div>
+<div>&ensp;&ensp;-Removed hard-coded XPATHs</div>
+<div>&ensp;&ensp;-Added language chromedriver flag to force en-US</div>
