@@ -64,6 +64,7 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added v3 to the ASCII art title</div>
 <div>&ensp;&ensp;-Removed JavaScript that scrolls div (was always changing) and sends scroll key instead</div>
 <div>v3.1:</div>
+<div>&ensp;&ensp;-Added Python Shebang</div>
 <div>&ensp;&ensp;-Added if __name__ == "__main__":</div>
 <div>&ensp;&ensp;-Refactor / Moved code into main</div>
 <div>&ensp;&ensp;-Removed hard-coded XPATHs</div>
