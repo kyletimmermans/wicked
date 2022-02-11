@@ -69,3 +69,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Refactor / Moved code into main</div>
 <div>&ensp;&ensp;-Removed hard-coded XPATHs</div>
 <div>&ensp;&ensp;-Added language chromedriver flag to force en-US</div>
+<div>&ensp;&ensp;-Added --version and -v command line flag<div>
