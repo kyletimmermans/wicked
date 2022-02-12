@@ -292,7 +292,6 @@ def print_results(differences):
     print("")  # Formatting space away from next prompt line
 
 
-
 if __name__ == "__main__":
 
     if '--version' in sys.argv or '-v' in sys.argv:
