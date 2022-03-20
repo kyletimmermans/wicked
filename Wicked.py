@@ -64,14 +64,14 @@ def inputCreds():
 # So we can remove it even when it fails, e.g. is an exception also does quit()
 def hostsRemoval(alreadyThere):
     if alreadyThere == False:
-        if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have same instructions
+        if sys.platform == "darwin" or sys.platform == "linux" or sys.platform == "linux2":  # OSX and Linux have same instructions
             readFile = open("/etc/hosts")
             lines = readFile.readlines()
             readFile.close()
             w = open("/etc/hosts", 'w')
             w.writelines([item for item in lines[:-1]])
             w.close()
-        elif platform == "win32":  # Windows
+        elif sys.platform == "win32":  # Windows
             readFile = open("C:\Windows\System32\drivers\etc\hosts")
             lines = readFile.readlines()
             readFile.close()
@@ -89,16 +89,16 @@ def lineCheck(file, string):  # Check if hosts file is in normal spot, if not, s
         return False
     except FileNotFoundError:
         print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in", end=' ')  # append error handling to this string
-        if platform == "darwin" or platform == "linux" or platform == "linux2":
+        if sys.platform == "darwin" or sys.platform == "linux" or sys.platform == "linux2":
             print("/etc/ and that the file is not hidden")
-        elif platform == "win32":
+        elif sys.platform == "win32":
             print("C:\Windows\System32\drivers\etc\ and that the file is not hidden")
         quit()
 
 
 def chromedriver_setup():
     # Check OS type for correct path format and if hosts file needs to be changed
-    if platform == "darwin" or platform == "linux" or platform == "linux2":  # OSX and Linux have the same instructions
+    if sys.platform == "darwin" or sys.platform == "linux" or sys.platform == "linux2":  # OSX and Linux have the same instructions
         # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
         if lineCheck("/etc/hosts", "127.0.0.1 localhost"):  # If its there already
             alreadyThere = True
@@ -116,7 +116,7 @@ def chromedriver_setup():
             print("Try updating your current version of Chrome, and place an updated version of chromedriver in the 'Wicked.py' directory")
             hostsRemoval(alreadyThere)
             quit()
-    elif platform == "win32":  # Windows
+    elif sys.platform == "win32":  # Windows
         if lineCheck("C:\Windows\System32\drivers\etc\hosts", "127.0.0.1 localhost"):
             alreadyThere = True
         else:
