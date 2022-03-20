@@ -15,12 +15,11 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains as action
 from bs4 import BeautifulSoup
 from colorama import Fore
-from sys import platform
 from tqdm import trange
 import getpass
 import time
 import re
-import sys  # Import again for argv use
+import sys
 
 
 def print_banner():
