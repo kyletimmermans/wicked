@@ -2,9 +2,9 @@
 
 '''
 Kyle Timmermans
-Feb 11, 2022
-Compiled in Python 3.9.7
 Wicked v3.1
+v3.1 Released: Feb 11, 2022
+Compiled in Python 3.9.7
 '''
 
 # Driving Chrome (Headless) with Selenium
