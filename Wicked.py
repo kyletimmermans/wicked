@@ -19,7 +19,6 @@ from sys import platform
 from tqdm import trange
 import getpass
 import time
-import colorama
 import re
 import sys  # Import again for argv use
 
