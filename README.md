@@ -1,4 +1,4 @@
-![Version 3.1](http://img.shields.io/badge/version-v3.1-orange.svg)
+![Version 3.2](http://img.shields.io/badge/version-v3.2-orange.svg)
 ![Python 3.9](http://img.shields.io/badge/python-3.9-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -70,3 +70,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Removed hard-coded XPATHs</div>
 <div>&ensp;&ensp;-Added language chromedriver flag to force en-US</div>
 <div>&ensp;&ensp;-Added --version and -v command line flag<div>
+<div>v3.2: Added support for million(s) followers / following</div>
