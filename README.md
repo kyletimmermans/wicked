@@ -1,5 +1,5 @@
 ![Version 3.2](http://img.shields.io/badge/version-v3.2-orange.svg)
-![Python 3.9](http://img.shields.io/badge/python-3.9-blue.svg)
+![Python 3.11](http://img.shields.io/badge/python-3.9-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
@@ -13,7 +13,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 3. Download the [Chrome Webdriver](https://chromedriver.chromium.org/downloads "Chrome Webdriver")
  for your current version of Chrome (check by visiting chrome://version in your browser) and for your respective system (Windows, MacOSX, Linux) and place it in the same folder / directory as _Wicked.py_
 4. Finally, run with admin/root permissions: **sudo python3 Wicked.py**
-5. Input your username and password for Instagram, and wait a few minutes for it to print to the console. Run time is dependant on how many people you follow / follow you
+5. Input your username and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to print to the console. Run time is dependant on how many people you follow / follow you
 
 _Note:_ 
 
