@@ -1,5 +1,5 @@
 ![Version 3.2](http://img.shields.io/badge/version-v3.2-orange.svg)
-![Python 3.11](http://img.shields.io/badge/python-3.9-blue.svg)
+![Python 3.11](http://img.shields.io/badge/python-3.11-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
