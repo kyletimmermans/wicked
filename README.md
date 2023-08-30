@@ -72,4 +72,6 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Added --version and -v command line flag<div>
 <div>v3.2:</div>
 <div>&ensp;&ensp;-Added support for million(s) followers / following<div>
-<div>&ensp;&ensp;-Selenium switched from executable path to "service"</div>
+<div>&ensp;&ensp;-Selenium:</div>
+<div>&ensp;&ensp;&ensp;&ensp;-Switched from executable path to "service"</div>
+<div>&ensp;&ensp;&ensp;&ensp;-Switched to new "find_element" model</div>
