@@ -70,4 +70,6 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Removed hard-coded XPATHs</div>
 <div>&ensp;&ensp;-Added language chromedriver flag to force en-US</div>
 <div>&ensp;&ensp;-Added --version and -v command line flag<div>
-<div>v3.2: Added support for million(s) followers / following</div>
+<div>v3.2:</div>
+<div>&ensp;&ensp;-Added support for million(s) followers / following<div>
+<div>&ensp;&ensp;-Selenium switched from executable path to "service"</div>
