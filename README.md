@@ -75,3 +75,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Selenium:</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Switched from executable path to "service"</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Switched to new "find_element" model</div>
+<div>&ensp;&ensp;&ensp;&ensp;-Removed hard-coded coordinates system for scrolling modal</div>
