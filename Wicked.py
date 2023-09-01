@@ -67,7 +67,7 @@ def print_banner():
 
 # Input insta creds
 def input_creds():
-    username = input("Input your Instagram username: ")
+    username = input("Input your Instagram Username / Email / Phone #: ")
     password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
     return [username, password]  # Return creds as list
 
@@ -192,7 +192,7 @@ def mfa_check():
             time.sleep(3)
             wait = WebDriverWait(driver, 10)
             mfa_check = wait.until(EC.presence_of_element_located((By.ID, "verificationCodeDescription")))
-        except NoSuchElementException:
+        except (NoSuchElementException, TimeoutException): # No MFA enabled, break and move on
             break
         if mfa_check:  # Code needed
             mfa_code = input("Input MFA code: ")
