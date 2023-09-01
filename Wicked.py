@@ -4,7 +4,7 @@
 '''
 Kyle Timmermans
 Wicked v4.0
-v4.0 Released: Sep 1st, 2023
+v4.0 Released: Sep 1, 2023
 Compiled in Python 3.11.4
 '''
 
