@@ -4,7 +4,7 @@
 '''
 Kyle Timmermans
 Wicked v4.0
-v4.0 Released: Sep 1, 2023
+v4.0 Released: Sep 3, 2023
 Compiled in Python 3.11.4
 '''
 
@@ -17,6 +17,7 @@ from tqdm import trange
 from wakepy import keep
 from bs4 import BeautifulSoup
 from colorama import Fore, init
+
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -69,7 +70,27 @@ def print_banner():
 def input_creds():
     username = input("Input your Instagram Username / Email / Phone #: ")
     password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
+
     return [username, password]  # Return creds as list
+
+
+# If not username, we cannot pass an email or phone #
+# to a link like instagram.com/{username}/followers. 
+# Instead, we have to go get real username
+def username_fix(username):
+    if '@' in username or username.isdigit():
+        # We choose this page because it 404's and no other potential
+        # usernames with the word 'Profile' can get in the way because it's blank
+        driver.get("https://www.instagram.com/!!!")
+        time.sleep(4)
+        wait = WebDriverWait(driver, 10)
+        profile_button = wait.until(EC.presence_of_element_located((By.XPATH, 
+        "//span[text() = 'Profile']")))
+        profile_button.click()
+        time.sleep(4)
+        username = driver.current_url.split('/')[-2]  # Get username from URL
+
+    return username
 
 
 # Remove hosts addition if it was made, needed for everytime an exception interrupts program
@@ -100,7 +121,7 @@ def line_check(file, string):  # Check if hosts file is in normal spot, if not, 
                     return True
         return False
     except FileNotFoundError:
-        print(Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in", end=' ')  # append error handling to this string
+        print("\n"+Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in", end=' ')  # append error handling to this string
         if sys.platform in ("darwin", "linux", "linux2"):
             print("/etc/ and that the file is not hidden")
         elif sys.platform == "win32":
@@ -126,10 +147,9 @@ def chromedriver_setup():
             chrome_options.add_argument(f'user-agent={user_agent}')  # Update our options with the safe user agent
             driver = webdriver.Chrome(service=service, options=chrome_options)  # Driver re-initialized with safe user agent
         except WebDriverException:
-            print(Fore.RED+"Error: "+Fore.RESET+"Correct chromedriver version file not found in working directory!")
+            print("\n"+Fore.RED+"Error: "+Fore.RESET+"Correct chromedriver version file not found in working directory!")
             print("Try updating your current version of Chrome, and place an "
                   "updated version of chromedriver in the 'Wicked.py' directory\n")
-            driver.quit()
             hosts_removal(alreadyThere)
             quit()
     elif sys.platform == "win32":  # Windows
@@ -147,10 +167,9 @@ def chromedriver_setup():
             chrome_options.add_argument(f'user-agent={user_agent}')  # Update our options with the safe user agent
             driver = webdriver.Chrome(service=service, options=chrome_options)  # Driver re-initialized with safe user agent
         except WebDriverException:
-            print(Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
+            print("\n"+Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
             print("Try updating your current version of Chrome, and place an "
                   "updated version of chromedriver in the 'Wicked.py' directory\n")
-            driver.quit()
             hosts_removal(alreadyThere)
             quit()
 
@@ -167,7 +186,7 @@ def instagram_login(creds):
             try:  # Check internet connection
                 driver.find_element(By.CSS_SELECTOR, "[aria-label='Phone number, username, or email']").send_keys(creds[0])  # Send username
             except NoSuchElementException:
-                print(Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
+                print("\n"+Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
                 driver.quit()
                 hosts_removal(alreadyThere)
                 quit()
@@ -217,24 +236,27 @@ def number_convert(amount):
     Continue? (Y/n): '''
 
     if amount.find(',') != -1:  # Handle for commas and K in number, can't have both in one number
-        amount = int(amount.replace(',', ''))  # Make into int and remove commas if present
+        amount = amount.replace(',', '')  # Make into int and remove commas if present
     elif amount.find('K') != -1:  # If K (thousand) is present
-        amount = int(amount.replace('K', '') + "000")  # Remove K and add 000 to make it a usable thousand number
+        amount = amount.replace('K', '') + "000"  # Remove K and add 000 to make it a usable thousand number
     elif amount.find('M') != -1:  # If account has a million or more followers, just quit
         if 'Y' in input(msg).upper():
-            amount = int(amount.replace('M', '') + "000000")
+            amount = amount.replace('M', '') + "000000"
         else:
             print("\nQuitting...\n")
             driver.quit()
             hosts_removal(alreadyThere)
             quit()
 
-    return amount
+    # int() everything, not just the above cases e.g. 0-999
+    return int(amount)
 
 
 # Click on the right elements to get the follower/following lists
-def open_elements(creds):
+def open_elements():
     # Get self page
+    # Change once, always fixed (If email or phone #), otherwise no change
+    creds[0] = username_fix(creds[0])
     driver.get(f"https://www.instagram.com/{creds[0]}")
     time.sleep(3)
 
@@ -262,7 +284,7 @@ def scroll_loop(size):
         scroll_elem = wait.until(EC.presence_of_element_located((By.XPATH, 
         "//div[contains(@style, 'height: auto; overflow: hidden auto;')]/..")))
     except TimeoutException:
-        print("\nTimeout Error: Instagram might be timing you out, try using this program later\n")
+        print("\n"+Fore.RED+"Timeout Error: "+Fore.RESET+"Instagram might be timing you out, try using this program later\n")
         driver.quit()
         hosts_removal(alreadyThere)
         quit()
@@ -278,10 +300,17 @@ def get_list():
     tempList = []
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
+
+    # In case "Suggested for you" pops up in following modal
+    # Remove the extra accounts they suggest, we do not follow them
+    if suggested_check := soup.find(text="Suggested for you"):
+        for sibling in suggested_check.find_all_next(True):
+            sibling.extract()
+
     # Make HTML selector small so changes to tree don't affect selection (not too specific)
     # Less to break
-    x = soup.select("a > div > div > span")  # Line to usernames in the HTML (End of XPATH)
-    for i in x:
+    username_list = soup.select("a > div > div > span")  # Line to usernames in the HTML (End of XPATH)
+    for i in username_list:
         # Don't append whitespace, don't print just "1" randomly
         if i.text.strip() and i.text != "1":
             tempList.append(i.text)
@@ -294,14 +323,22 @@ def collect_and_finish(myAmountofFollowers, myAmountofFollowing):
     driver.get(f"https://www.instagram.com/{creds[0]}/followers")  # Open 'Followers' Modal
     print("\nPart 1/2")
     time.sleep(5)
-    scroll_loop(myAmountofFollowers)
-    followers = get_list()  # Followers List
+    # Handle 0 followers
+    if myAmountofFollowers != 0:
+        scroll_loop(myAmountofFollowers)
+        followers = get_list()  # Followers List
+    else:
+        followers = []
     time.sleep(2)
     driver.get(f"https://www.instagram.com/{creds[0]}/following")  # Open 'Following' Modal
     time.sleep(5)
     print("\nPart 2/2")
-    scroll_loop(myAmountofFollowing)
-    following = get_list()  # Following List
+    # Handle 0 following
+    if myAmountofFollowing != 0:
+        scroll_loop(myAmountofFollowing)
+        following = get_list()  # Following List
+    else:
+        following = []
     driver.quit()  # DON'T DELETE THIS
     hosts_removal(alreadyThere) # Final chance to remove it
 
@@ -322,7 +359,6 @@ def print_results(differences):
     for i in differences:
         print(i)
     print("")  # Formatting space away from next prompt line
-
 
 
 if __name__ == "__main__":
@@ -348,13 +384,14 @@ if __name__ == "__main__":
 
     alreadyThere = False  # if localhost line is already present, we don't want to mess with it
 
+    # Top level scope, all functions can access this variable
     driver = chromedriver_setup()
 
     instagram_login(creds)
 
     mfa_check()
 
-    myAmountofFollowers, myAmountofFollowing = open_elements(creds)
+    myAmountofFollowers, myAmountofFollowing = open_elements()
 
     # wakepy prevent screenlock / sleep which causes Selenium crash
     with keep.presenting() as k:
