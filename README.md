@@ -77,8 +77,9 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>4.0:</div>
 <div>&ensp;&ensp;-Updated banner to v4<div>
 <div>&ensp;&ensp;-Added option to take email or phone number instead of just Instagram username<div>
-<div>&ensp;&ensp;-Added support for million(s) followers / following<div>
+<div>&ensp;&ensp;-Added support for million(s) and just 0 followers / following<div>
 <div>&ensp;&ensp;-Using wakepy to prevent program from sleeping and crashing<div>
+<div>&ensp;&ensp;-Deal with "Suggested for you" accounts in following modal</div>
 <div>&ensp;&ensp;-Bug & Logic fixes</div> 
 <div>&ensp;&ensp;-Selenium:</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Switched from executable_path to "service" model</div>
