@@ -74,7 +74,7 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;-Removed hard-coded XPATHs</div>
 <div>&ensp;&ensp;-Added language chromedriver flag to force en-US</div>
 <div>&ensp;&ensp;-Added --version and -v command line flag<div>
-<div>4.0:</div>
+<div>v4.0:</div>
 <div>&ensp;&ensp;-Updated banner to v4<div>
 <div>&ensp;&ensp;-Added option to take email or phone number instead of just Instagram username<div>
 <div>&ensp;&ensp;-Added support for million(s) and just 0 followers / following<div>
