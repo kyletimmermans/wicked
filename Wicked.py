@@ -355,7 +355,7 @@ def collect_and_finish(myAmountofFollowers, myAmountofFollowing):
 # Print Results to Console
 def print_results(differences):
     print(Fore.GREEN, " ")  # Space before "Results: "
-    print("Results (" + str(len(differences)) + "): " + Fore.RESET)  # Number of people noted as well
+    print(f"Results ({len(differences):,}): {Fore.RESET}")  # Number of people noted as well
     for i in differences:
         print(i)
     print("")  # Formatting space away from next prompt line
