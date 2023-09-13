@@ -1,4 +1,4 @@
-![Version 4.0](http://img.shields.io/badge/version-v4.0-orange.svg)
+![Version 4.1](http://img.shields.io/badge/version-v4.1-orange.svg)
 ![Python 3.11](http://img.shields.io/badge/python-3.11-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -87,3 +87,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;&ensp;&ensp;-No longer clicking follower / following modal, now visits links: instagram.com/{username}/followers</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Removed hard-coded cursor coordinates system for scrolling modal</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Using WebDriverWait to wait for elements to show up</div>
+<div>v4.1: Print results to .txt file</div>
