@@ -87,4 +87,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;&ensp;&ensp;-No longer clicking follower / following modal, now visits links: instagram.com/{username}/followers</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Removed hard-coded cursor coordinates system for scrolling modal</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Using WebDriverWait to wait for elements to show up</div>
-<div>v4.1: Print results to .txt file</div>
+<div>v4.1: Print results to a .txt file</div>
