@@ -3,8 +3,8 @@
 
 '''
 Kyle Timmermans
-Wicked v4.0
-v4.0 Released: Sep 3, 2023
+Wicked v4.1
+v4.0 Released: Sep 14, 2023
 Compiled in Python 3.11.4
 '''
 
@@ -16,6 +16,7 @@ import getpass
 from tqdm import trange
 from wakepy import keep
 from bs4 import BeautifulSoup
+from datetime import datetime
 from colorama import Fore, init
 
 # Driving Chrome (Headless) with Selenium
@@ -353,18 +354,42 @@ def collect_and_finish(myAmountofFollowers, myAmountofFollowing):
 
 
 # Print Results to Console
-def print_results(differences):
-    print(Fore.GREEN, " ")  # Space before "Results: "
+def print_results(differences, username):
+    # Create file for writing results
+    # Don't want to overwrite other result files so
+    # add a (1) or (2) to file name if need be
+    f = None  # Want to use outside of the while-loop scope
+    counter = 0
+    while True:
+        try:
+            # if filename not taken
+            if counter == 0:
+                f = open("wicked_results.txt", "x")
+            else:
+                f = open(f"wicked_results ({counter}).txt", "x")
+            # If no error, break loop
+            break
+        except FileExistsError:
+            counter += 1
+    # File writeout
+    f.write("Wicked v4.1 Results File\n")
+    f.write(f"Username: {username}\n")
+    f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+    f.write(f"Results ({len(differences):,}):\n")
+    # CLI writeout
+    print(Fore.GREEN, " ")  # Newline before "Results: "
     print(f"Results ({len(differences):,}):{Fore.RESET}")  # Number of people noted as well
     for i in differences:
         print(i)
+        f.write(f"{i}\n")
+    f.close()
     print("")  # Formatting space away from next prompt line
 
 
 if __name__ == "__main__":
 
     if '--version' in sys.argv or '-v' in sys.argv:
-        print("\nWicked v4.0\n")
+        print("\nWicked v4.1\n")
         quit()
 
     init()  # Initialize colorama
@@ -397,4 +422,4 @@ if __name__ == "__main__":
     with keep.presenting() as k:
         differences = collect_and_finish(myAmountofFollowers, myAmountofFollowing)
 
-    print_results(differences)
+    print_results(differences, creds[0])
