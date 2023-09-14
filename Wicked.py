@@ -357,7 +357,7 @@ def collect_and_finish(myAmountofFollowers, myAmountofFollowing):
 def print_results(differences, username):
     # Create file for writing results
     # Don't want to overwrite other result files so
-    # add a (1) or (2) to file name if need be
+    # add a (1), (2), (3) ...  to file name if need be
     f = None  # Want to use outside of the while-loop scope
     counter = 0
     while True:
