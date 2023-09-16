@@ -15,7 +15,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 ## How to run it:
 1. Prerequisites: Must have Python3 and Google Chrome on your system
 2. Run: **pip3 install -r requirements.txt**
-3. Run with admin/root permissions (to potentially edit _hosts_ file): **sudo python3 Wicked.py**
+3. Run: **python3 Wicked.py**
 4. Input your username/email/phone # and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to return the results. Run time is dependant on how many people you follow / follow you
 
 _Note:_ 
