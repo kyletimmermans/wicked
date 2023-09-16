@@ -1,4 +1,4 @@
-![Version 4.1](http://img.shields.io/badge/version-v4.1-orange.svg)
+![Version 4.5](http://img.shields.io/badge/version-v4.5-orange.svg)
 ![Python 3.11](http://img.shields.io/badge/python-3.11-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -12,12 +12,10 @@ A program that prints a list of people that you follow, but don't follow you bac
 This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. This program does not use the Instagram API.
 
 ## How to run it:
-1. In order to make this work, you must have python3 on your system
+1. Prerequisites: Must have Python3 and Google Chrome on your system
 2. Run: **pip3 install -r requirements.txt**
-3. Download the [Chrome Webdriver](https://googlechromelabs.github.io/chrome-for-testing/#stable "Chrome Webdriver")
- for your current version of Chrome (check by visiting chrome://version in your browser) and for your respective system (Windows, MacOSX, Linux) and place it in the same folder / directory as _Wicked.py_
-4. Finally, run with admin/root permissions (to potentially edit hosts file): **sudo python3 Wicked.py**
-5. Input your username and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to print to the console. Run time is dependant on how many people you follow / follow you
+3. Run with admin/root permissions (to potentially edit _hosts_ file): **sudo python3 Wicked.py**
+4. Input your username and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to print to the console. Run time is dependant on how many people you follow / follow you
 
 _Note:_ 
 
@@ -88,3 +86,4 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;&ensp;&ensp;-Removed hard-coded cursor coordinates system for scrolling modal</div>
 <div>&ensp;&ensp;&ensp;&ensp;-Using WebDriverWait to wait for elements to show up</div>
 <div>v4.1: Print results to a .txt file</div>
+<div>v4.5: Now using <a href="https://pypi.org/project/chromedriver-autoinstaller/">chromedriver-autoinstaller</a> to automatically grab chromedriver</div>
