@@ -3,12 +3,13 @@
 
 '''
 Kyle Timmermans
-Wicked v4.1
-v4.0 Released: Sep 14, 2023
+Wicked v4.5
+v4.5 Released: Sep 16, 2023
 Compiled in Python 3.11.4
 '''
 
 
+# Base imports
 import re
 import sys
 import time
@@ -18,6 +19,9 @@ from wakepy import keep
 from bs4 import BeautifulSoup
 from datetime import datetime
 from colorama import Fore, init
+
+# Auto download & install chromedriver
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
@@ -131,7 +135,7 @@ def line_check(file, string):  # Check if hosts file is in normal spot, if not, 
 
 
 def chromedriver_setup():
-    # Check OS type for correct path format and if hosts file needs to be changed
+    # Check if hosts file needs to be changed
     if sys.platform in ("darwin", "linux", "linux2"):  # OSX and Linux have the same instructions
         # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
         if line_check("/etc/hosts", "127.0.0.1 localhost"):  # If its there already
@@ -140,19 +144,6 @@ def chromedriver_setup():
             host_file = open("/etc/hosts", "a")
             host_file.write("127.0.0.1 localhost #Wicked" + "\n")
             host_file.close()
-        try:
-            service = Service(executable_path="./chromedriver")
-            driver = webdriver.Chrome(service=service, options=chrome_options)  # ./ indicates this folder for OSX/Linux
-            user_agent = driver.execute_script("return navigator.userAgent;").replace("Headless", "")  # Get the user agent and remove the word "Headless"
-            driver.quit()
-            chrome_options.add_argument(f'user-agent={user_agent}')  # Update our options with the safe user agent
-            driver = webdriver.Chrome(service=service, options=chrome_options)  # Driver re-initialized with safe user agent
-        except WebDriverException:
-            print("\n"+Fore.RED+"Error: "+Fore.RESET+"Correct chromedriver version file not found in working directory!")
-            print("Try updating your current version of Chrome, and place an "
-                  "updated version of chromedriver in the 'Wicked.py' directory\n")
-            hosts_removal(alreadyThere)
-            quit()
     elif sys.platform == "win32":  # Windows
         if line_check("C:\\Windows\\System32\\drivers\\etc\\hosts", "127.0.0.1 localhost"):
             alreadyThere = True
@@ -160,19 +151,17 @@ def chromedriver_setup():
             host_file = open("C:\\Windows\\System32\\drivers\\etc\\hosts", "a")
             host_file.write("127.0.0.1 localhost #Wicked" + "\n")
             host_file.close()
-        try:
-            service = Service(executable_path="chromedriver.exe")
-            driver = webdriver.Chrome(service=service, options=chrome_options)  # No need for path, using current working directory
-            user_agent = driver.execute_script("return navigator.userAgent;").replace("Headless", "")  # Get the user agent and remove the word "Headless"
-            driver.quit()
-            chrome_options.add_argument(f'user-agent={user_agent}')  # Update our options with the safe user agent
-            driver = webdriver.Chrome(service=service, options=chrome_options)  # Driver re-initialized with safe user agent
-        except WebDriverException:
-            print("\n"+Fore.RED+"Error: "+Fore.RESET+"Chromedriver not found in working directory!")
-            print("Try updating your current version of Chrome, and place an "
-                  "updated version of chromedriver in the 'Wicked.py' directory\n")
-            hosts_removal(alreadyThere)
-            quit()
+
+    # Chromedriver automatically downloaded w/ Selenium 4 & webdriver-manager
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    # Get the user agent and remove the word "Headless"
+    user_agent = driver.execute_script("return navigator.userAgent;").replace("Headless", "")
+    # Quit the first temp-run
+    driver.quit()
+    # Update our options with the safe user agent
+    chrome_options.add_argument(f'user-agent={user_agent}')
+    # Driver re-initialized with safe user agent
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
     return driver
 
@@ -290,8 +279,8 @@ def scroll_loop(size):
         hosts_removal(alreadyThere)
         quit()
 
-    # total follow count / 2.7 = sufficient loops to get everything, trange prints progressbar
-    for i in trange(int(size / 2.7)):
+    # total follow count / 2.6 = sufficient loops to get everything, trange prints progressbar
+    for i in trange(int(size / 2.6)):
         driver.execute_script("arguments[0].scrollTop += 2000;", scroll_elem)
         time.sleep(0.5)
 
@@ -372,24 +361,25 @@ def print_results(differences, username):
         except FileExistsError:
             counter += 1
     # File writeout
-    f.write("Wicked v4.1 Results File\n")
+    f.write("Wicked v4.5 Results File\n")
     f.write(f"Username: {username}\n")
-    f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-    f.write(f"Results ({len(differences):,}):\n")
+    f.write(f"Date: {datetime.now().strftime('%b-%d-%Y %H:%M:%S')}\n\n")
+    results_string = f"Results ({len(differences):,}):"
+    f.write(f"{results_string}\n")
+    f.write(f"{len(results_string)*'-'}\n")
     # CLI writeout
     print(Fore.GREEN, " ")  # Newline before "Results: "
-    print(f"Results ({len(differences):,}):{Fore.RESET}")  # Number of people noted as well
+    print(f"{results_string}{Fore.RESET}")  # Number of people noted as well
     for i in differences:
         print(i)
         f.write(f"{i}\n")
     f.close()
-    print("")  # Formatting space away from next prompt line
 
 
 if __name__ == "__main__":
 
     if '--version' in sys.argv or '-v' in sys.argv:
-        print("\nWicked v4.1\n")
+        print("\nWicked v4.5\n")
         quit()
 
     init()  # Initialize colorama
