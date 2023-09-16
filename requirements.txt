@@ -3,3 +3,4 @@ bs4 >= 4.10.0
 colorama >= 0.4.6
 tqdm >= 4.62.3
 wakepy >= 0.7.1
+chromedriver_autoinstaller >= 0.6.2
