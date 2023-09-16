@@ -9,6 +9,7 @@ A program that prints a list of people that you follow, but don't follow you bac
 
 </br>
 
+## How it works:
 This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. This program does not use the Instagram API.
 
 ## How to run it:
