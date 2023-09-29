@@ -3,8 +3,8 @@
 
 '''
 Kyle Timmermans
-Wicked v4.5
-v4.5 Released: Sep 16, 2023
+Wicked v4.6
+v4.6 Released: Sep 28, 2023
 Compiled in Python 3.11.4
 '''
 
@@ -98,60 +98,7 @@ def username_fix(username):
     return username
 
 
-# Remove hosts addition if it was made, needed for everytime an exception interrupts program
-# So we can remove it even when it fails, e.g. is an exception also does quit()
-def hosts_removal(alreadyThere):
-    if alreadyThere == False:
-        if sys.platform in ("darwin", "linux", "linux2"):  # OSX and Linux have same instructions
-            readFile = open("/etc/hosts")
-            lines = readFile.readlines()
-            readFile.close()
-            w = open("/etc/hosts", 'w')
-            w.writelines([item for item in lines[:-1]])
-            w.close()
-        elif sys.platform == "win32":  # Windows
-            readFile = open("C:\\Windows\\System32\\drivers\\etc\\hosts")
-            lines = readFile.readlines()
-            readFile.close()
-            w = open("C:\\Windows\\System32\\drivers\\etc\\hosts", 'w')
-            w.writelines([item for item in lines[:-1]])
-            w.close()
-
-
-def line_check(file, string):  # Check if hosts file is in normal spot, if not, show steps to fix
-    try:
-        with open(file, 'r') as hostsFile: #Open file in read-only
-            for line in hostsFile:  # Check every line
-                if string in line:  # If in the line, return True, else False
-                    return True
-        return False
-    except FileNotFoundError:
-        print("\n"+Fore.RED+"Error: "+Fore.RESET+"Hosts file not found! Make sure hosts file is in", end=' ')  # append error handling to this string
-        if sys.platform in ("darwin", "linux", "linux2"):
-            print("/etc/ and that the file is not hidden")
-        elif sys.platform == "win32":
-            print("C:\\Windows\\System32\\drivers\\etc\\ and that the file is not hidden")
-        quit()
-
-
 def chromedriver_setup():
-    # Check if hosts file needs to be changed
-    if sys.platform in ("darwin", "linux", "linux2"):  # OSX and Linux have the same instructions
-        # Go through each line, if not "127.0.0.1 localhost" go to next, if found, skip next step and set alreadyThere = True
-        if line_check("/etc/hosts", "127.0.0.1 localhost"):  # If its there already
-            alreadyThere = True
-        else:
-            host_file = open("/etc/hosts", "a")
-            host_file.write("127.0.0.1 localhost #Wicked" + "\n")
-            host_file.close()
-    elif sys.platform == "win32":  # Windows
-        if line_check("C:\\Windows\\System32\\drivers\\etc\\hosts", "127.0.0.1 localhost"):
-            alreadyThere = True
-        else:
-            host_file = open("C:\\Windows\\System32\\drivers\\etc\\hosts", "a")
-            host_file.write("127.0.0.1 localhost #Wicked" + "\n")
-            host_file.close()
-
     # Chromedriver automatically downloaded w/ Selenium 4 & webdriver-manager
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     # Get the user agent and remove the word "Headless"
@@ -178,7 +125,6 @@ def instagram_login(creds):
             except NoSuchElementException:
                 print("\n"+Fore.RED+"Error: "+Fore.RESET+ "No Internet Connection!")
                 driver.quit()
-                hosts_removal(alreadyThere)
                 quit()
               # Send password
             driver.find_elements(By.CSS_SELECTOR, "[aria-label='Password']")[0].send_keys(creds[1])
@@ -235,7 +181,6 @@ def number_convert(amount):
         else:
             print("\nQuitting...\n")
             driver.quit()
-            hosts_removal(alreadyThere)
             quit()
 
     # int() everything, not just the above cases e.g. 0-999
@@ -256,11 +201,11 @@ def open_elements():
     f"//div[contains(string(), ' following')]")))[2].get_attribute('innerHTML')
 
     # Get Followers Number, used to track javascript passes
-    myAmountofFollowers = re.search(r'<span>([\d,]+[MK]?)</span></span>\s+followers', raw_html).group(1)
+    myAmountofFollowers = re.search(r'>([\d,]+[MK]?)</span></span>\s+followers', raw_html).group(1)
     myAmountofFollowers = number_convert(myAmountofFollowers)
 
     # Get Following Number
-    myAmountofFollowing = re.search(r'<span>([\d,]+[MK]?)</span></span>\s+following', raw_html).group(1)
+    myAmountofFollowing = re.search(r'>([\d,]+[MK]?)</span></span>\s+following', raw_html).group(1)
     myAmountofFollowing = number_convert(myAmountofFollowing)
 
     return [myAmountofFollowers, myAmountofFollowing]
@@ -276,7 +221,6 @@ def scroll_loop(size):
     except TimeoutException:
         print("\n"+Fore.RED+"Timeout Error: "+Fore.RESET+"Instagram might be timing you out, try using this program later\n")
         driver.quit()
-        hosts_removal(alreadyThere)
         quit()
 
     # total follow count / 2.6 = sufficient loops to get everything, trange prints progressbar
@@ -330,7 +274,6 @@ def collect_and_finish(myAmountofFollowers, myAmountofFollowing):
     else:
         following = []
     driver.quit()  # DON'T DELETE THIS
-    hosts_removal(alreadyThere) # Final chance to remove it
 
     # differences = whoIFollow - (myFollowers - peopleIdontFollowBack)
     # People who I follow who are not my followers
@@ -361,7 +304,7 @@ def print_results(differences, username):
         except FileExistsError:
             counter += 1
     # File writeout
-    f.write("Wicked v4.5 Results File\n")
+    f.write("Wicked v4.6 Results File\n")
     f.write(f"Username: {username}\n")
     f.write(f"Date: {datetime.now().strftime('%b-%d-%Y %H:%M:%S')}\n\n")
     results_string = f"Results ({len(differences):,}):"
@@ -379,7 +322,7 @@ def print_results(differences, username):
 if __name__ == "__main__":
 
     if '--version' in sys.argv or '-v' in sys.argv:
-        print("\nWicked v4.5\n")
+        print("\nWicked v4.6\n")
         quit()
 
     init()  # Initialize colorama
@@ -396,8 +339,6 @@ if __name__ == "__main__":
     chrome_options.add_argument("--tls1.2")  # Encrypt info using TLS v1.2
     chrome_options.add_argument("--lang=en-US")  # Force English language so we can find the right elements
     chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off logs in windows
-
-    alreadyThere = False  # if localhost line is already present, we don't want to mess with it
 
     # Top level scope, all functions can access this variable
     driver = chromedriver_setup()
