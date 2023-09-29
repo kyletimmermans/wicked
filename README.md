@@ -1,4 +1,4 @@
-![Version 4.5](http://img.shields.io/badge/version-v4.5-orange.svg)
+![Version 4.6](http://img.shields.io/badge/version-v4.6-orange.svg)
 ![Python 3.11](http://img.shields.io/badge/python-3.11-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -89,3 +89,6 @@ _3. The program will also **temporarily** add the line, if not already present, 
 <div>&ensp;&ensp;&ensp;&ensp;-Using WebDriverWait to wait for elements to show up</div>
 <div>v4.1: Print results to a .txt file</div>
 <div>v4.5: Now using <a href="https://pypi.org/project/webdriver-manager/">webdriver-manager</a> to automatically install chromedriver</div>
+<div>v4.6:</div>
+<div>&ensp;&ensp;-Removed host file manipulation files<div>
+<div>&ensp;&ensp;-Regex fixes<div>
