@@ -1,4 +1,4 @@
-![Version 4.6](http://img.shields.io/badge/version-v4.6-orange.svg)
+![Version 4.7](http://img.shields.io/badge/version-v4.7-orange.svg)
 ![Python 3.11](http://img.shields.io/badge/python-3.11-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -91,3 +91,5 @@ _2. This program uses HTTPS and TLSv1.2 to send information to Instagram._
 <div>v4.6:</div>
 <div>&ensp;&ensp;-Removed host file manipulation files<div>
 <div>&ensp;&ensp;-Regex fixes<div>
+<div>v4.7:</div>
+<div>&ensp;&ensp;-Switched from getpass to pwinput for password masking<div>
