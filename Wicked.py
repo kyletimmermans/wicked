@@ -3,9 +3,9 @@
 
 '''
 Kyle Timmermans
-Wicked v4.6
-v4.6 Released: Sep 29, 2023
-Compiled in Python 3.11.4
+Wicked v4.7
+v4.7 Released: Dec 24, 2023
+Compiled in Python 3.11.5
 '''
 
 
@@ -13,7 +13,7 @@ Compiled in Python 3.11.4
 import re
 import sys
 import time
-import getpass
+import pwinput
 from tqdm import trange
 from wakepy import keep
 from bs4 import BeautifulSoup
@@ -71,10 +71,11 @@ def print_banner():
     print(Fore.RESET)  # Reset text color
 
 
-# Input insta creds
+# Input instagram creds
 def input_creds():
     username = input("Input your Instagram Username / Email / Phone #: ")
-    password = getpass.getpass("Input your password (Not Stored): ")  # getpass used to prevent shoulder surfing
+    # pwinput used to prevent shoulder surfing (allows masking)
+    password = pwinput.pwinput(prompt="Input your password (Not Stored): ", mask='*')
 
     return [username, password]  # Return creds as list
 
