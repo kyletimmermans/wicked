@@ -94,3 +94,4 @@ _2. This program uses HTTPS and TLSv1.2 to send information to Instagram._
 <div>v4.7:</div>
 <div>&ensp;&ensp;-Switched from getpass to pwinput for password masking<div>
 <div>&ensp;&ensp;-Fix failed MFA retry support<div>
+<div>&ensp;&ensp;-Scrolling method now requires devtools to open each time to load followers/following</div>
