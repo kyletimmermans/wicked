@@ -323,7 +323,7 @@ def print_results(differences, username):
 if __name__ == "__main__":
 
     if '--version' in sys.argv or '-v' in sys.argv:
-        print("\nWicked v4.6\n")
+        print("\nWicked v4.7\n")
         quit()
 
     init()  # Initialize colorama
