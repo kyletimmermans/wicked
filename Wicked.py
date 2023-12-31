@@ -4,7 +4,7 @@
 '''
 Kyle Timmermans
 Wicked v4.7
-v4.7 Released: Dec 24, 2023
+v4.7 Released: Dec 31, 2023
 Compiled in Python 3.11.5
 '''
 
@@ -31,7 +31,6 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains as action
 from selenium.common.exceptions import (
     TimeoutException,
     WebDriverException,
@@ -147,10 +146,10 @@ def mfa_check():
         try:
             time.sleep(3)
             wait = WebDriverWait(driver, 10)
-            mfa_check = wait.until(EC.presence_of_element_located((By.ID, "verificationCodeDescription")))
+            mfa_check_elem = wait.until(EC.presence_of_element_located((By.ID, "verificationCodeDescription")))
         except (NoSuchElementException, TimeoutException): # No MFA enabled, break and move on
             break
-        if mfa_check:  # Code needed
+        if mfa_check_elem:  # Code needed
             mfa_code = input("Input MFA code: ")
             driver.find_element(By.CSS_SELECTOR, "[aria-label='Security Code']").send_keys(mfa_code)
             time.sleep(2) # Wait for MFA button to be clickable
@@ -165,6 +164,11 @@ def mfa_check():
             break
         else:  # If we had no error, the error was found, go back to top
             print("MFA code incorrect or MFA call not successful, Try Again.\n")
+            # Remove incorrect MFA code
+            input_box = driver.find_element(By.CSS_SELECTOR, "[aria-label='Security Code']")
+            for i in range(10):
+                input_box.send_keys(Keys.BACK_SPACE)
+
 
 
 def number_convert(amount):
@@ -226,6 +230,8 @@ def scroll_loop(size):
 
     # total follow count / 2.6 = sufficient loops to get everything, trange prints progressbar
     for i in trange(int(size / 2.6)):
+        # New users won't load on scroll, we also need a resize event to load them
+        driver.execute_script("window.dispatchEvent(new Event('resize'));")
         driver.execute_script("arguments[0].scrollTop += 2000;", scroll_elem)
         time.sleep(0.5)
 
@@ -276,6 +282,7 @@ def collect_and_finish(myAmountofFollowers, myAmountofFollowing):
         following = []
     driver.quit()  # DON'T DELETE THIS
 
+
     # differences = whoIFollow - (myFollowers - peopleIdontFollowBack)
     # People who I follow who are not my followers
     differences = list(set(following) - set(followers))  # Remove the people in my followers list from the following list (set logic)
@@ -305,7 +312,7 @@ def print_results(differences, username):
         except FileExistsError:
             counter += 1
     # File writeout
-    f.write("Wicked v4.6 Results File\n")
+    f.write(f"Wicked v{version} Results File\n")
     f.write(f"Username: {username}\n")
     f.write(f"Date: {datetime.now().strftime('%b-%d-%Y %H:%M:%S')}\n\n")
     results_string = f"Results ({len(differences):,}):"
@@ -322,8 +329,10 @@ def print_results(differences, username):
 
 if __name__ == "__main__":
 
+    version = "4.7"
+
     if '--version' in sys.argv or '-v' in sys.argv:
-        print("\nWicked v4.7\n")
+        print(f"\nWicked v{version}\n")
         quit()
 
     init()  # Initialize colorama
@@ -334,7 +343,7 @@ if __name__ == "__main__":
 
     # Driver initialization and argument setting
     chrome_options = Options()  # Initialize options
-    chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
+    #chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
     chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
     chrome_options.add_argument("--no-sandbox")  # Helping argument
     chrome_options.add_argument("--tls1.2")  # Encrypt info using TLS v1.2
