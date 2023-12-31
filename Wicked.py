@@ -13,6 +13,7 @@ Compiled in Python 3.11.5
 import re
 import sys
 import time
+import random
 import pwinput
 from tqdm import trange
 from wakepy import keep
@@ -233,7 +234,8 @@ def scroll_loop(size):
         # New users won't load on scroll, we also need a resize event to load them
         driver.execute_script("window.dispatchEvent(new Event('resize'));")
         driver.execute_script("arguments[0].scrollTop += 2000;", scroll_elem)
-        time.sleep(0.5)
+        # Avoid going at a robotic speed
+        time.sleep(random.uniform(0.8, 1.3))
 
 
 # Used to get list of following and followers
