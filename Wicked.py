@@ -343,7 +343,7 @@ if __name__ == "__main__":
 
     # Driver initialization and argument setting
     chrome_options = Options()  # Initialize options
-    #chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
+    chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
     chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
     chrome_options.add_argument("--no-sandbox")  # Helping argument
     chrome_options.add_argument("--tls1.2")  # Encrypt info using TLS v1.2
