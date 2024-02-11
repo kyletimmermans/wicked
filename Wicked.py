@@ -348,7 +348,7 @@ if __name__ == "__main__":
     chrome_options.add_argument("--headless")  # Headless option and Headed option return different HTML sometimes
     chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
     chrome_options.add_argument("--no-sandbox")  # Helping argument
-    chrome_options.add_argument("--tls1.2")  # Encrypt info using TLS v1.2
+    chrome_options.add_argument("--tls1.3")  # Encrypt info using TLS v1.3
     chrome_options.add_argument("--lang=en-US")  # Force English language so we can find the right elements
     chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off logs in windows
 
