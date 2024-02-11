@@ -23,7 +23,7 @@ This program scrapes Instagram web pages that contain the usernames of the peopl
 _Note:_ 
 
 _1. This program does not log your username or password, it simply passes it to the Instagram login form._    
-_2. This program uses HTTPS and TLSv1.2 to send information to Instagram._
+_2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 
 </br>
 
@@ -95,3 +95,4 @@ _2. This program uses HTTPS and TLSv1.2 to send information to Instagram._
 <div>&ensp;&ensp;-Switched from getpass to pwinput for password masking<div>
 <div>&ensp;&ensp;-Fix failed MFA retry support<div>
 <div>&ensp;&ensp;-Scrolling method now requires window resize event to open each time to load followers/following</div>
+<div>&ensp;&ensp;-Using TLSv1.3 to send information</div>
