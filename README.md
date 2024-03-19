@@ -1,16 +1,16 @@
-![Version 4.7](http://img.shields.io/badge/version-v4.7-orange.svg)
-![Python 3.11](http://img.shields.io/badge/python-3.11-blue.svg)
+![Version 5.0](http://img.shields.io/badge/version-v5.0-orange.svg)
+![Python 3.12](http://img.shields.io/badge/python-3.12-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
 # <div align="center">Wicked</div>
 
-A program that prints a list of people that you follow, but don't follow you back on Instagram, using Selenium and Beautiful Soup
+A program that prints two lists: a list of people that you follow, but don't follow you back, and a list of people that follow you, but that you don't follow back on Instagram, using Selenium
 
 </br>
 
 ## How it works:
-This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. This program does not use the Instagram API.
+This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
 
 </br>
 
@@ -96,3 +96,9 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 <div>&ensp;&ensp;-Fix failed MFA retry support<div>
 <div>&ensp;&ensp;-Scrolling method now requires window resize event to open each time to load followers/following</div>
 <div>&ensp;&ensp;-Using TLSv1.3 to send information</div>
+<div>v5.0:</div>
+<div>&ensp;&ensp;-Added feature to see who you don't follow back<div>
+<div>&ensp;&ensp;&ensp;&ensp;-Updated banner with new program description</div>
+<div>&ensp;&ensp;-Added: -h, -u, --help, --usage flags</div>
+<div>&ensp;&ensp;-Fixes to ensure that all following/followers are retrieved properly<div>
+<div>&ensp;&ensp;&ensp;&ensp;-Removed scrolling method - Switched to intercept & replay XHR</div>
