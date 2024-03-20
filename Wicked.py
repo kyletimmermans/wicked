@@ -2,9 +2,9 @@
 
 '''
 Kyle Timmermans
-Wicked v5.0
-v5.0 Released: March 18, 2024
-Developed in Python 3.12.2
+Wicked v6.0
+March 20, 2024
+Python 3.12.2
 '''
 
 # Base imports
@@ -14,7 +14,8 @@ import json
 import random
 import pwinput
 import requests
-import threading
+import urllib.parse
+from math import ceil
 from time import sleep
 from wakepy import keep
 from tqdm import trange
@@ -35,9 +36,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import (
     TimeoutException,
-    WebDriverException,
-    NoSuchElementException,
-    ElementClickInterceptedException
+    NoSuchElementException
 )
 
 
@@ -48,14 +47,14 @@ def print_banner():
     print("      *'|'*       |`;`;`;`|                      ")
     print("        |         |:.'.'.'|                      ")
     print("        |         |:.:.:.:|                      ")
-    print("        |         |::....:|                                                    _________ _______  _        _______  ______               _______ ")
-    print("        |        /`   / ` \\                                           |\\     /|\\__   __/(  ____ \\| \\    /\\(  ____ \\(  __  \\    |\\     /|(  ____ \\")
-    print("        |       (   .' ^ \\^)                                          | )   ( |   ) (   | (    \\/|  \\  / /| (    \\/| (  \\  )   | )   ( || (    \\/")
+    print("        |         |::....:|                                                    _________ _______  _        _______  ______                ______")
+    print("        |        /`   / ` \\                                           |\\     /|\\__   __/(  ____ \\| \\    /\\(  ____ \\(  __  \\    |\\     /| / ____ \\")
+    print("        |       (   .' ^ \\^)                                          | )   ( |   ) (   | (    \\/|  \\  / /| (    \\/| (  \\  )   | )   ( |( (    \\/")
     print("        |_.,   (    \\    -/(            You're" + "                        | | _ | |   | |   | |      |  (_/ / | (__    | |   ) |   | |   | || (____  ")
-    print("     ,~`|   `~./     )._=/  )  ,,            gonna"+ "                    | |( )| |   | |   | |      |   _ (  |  __)   | |   | |   ( (   ) )(_____ \\ ")
-    print("    {   |     (       )|   (.~`  `~,             be"+ "                   | || || |   | |   | |      |  ( \\ \\ | (      | |   ) |    \\ \\_/ /       ) )")
-    print("    {   |      \\   _.'  \\   )       }             pop-u-lar!"+"          | () () |___) (___| (____/\\|  /  \\ \\| (____/\\| (__/  )     \\   /  /\\____) )")
-    print("    ;   |       ;`\\      `)-`       }     _.._   "+"                     (_______)\\_______/(_______/|_/    \\/(_______/(______/       \\_/   \\______/ ")
+    print("     ,~`|   `~./     )._=/  )  ,,            gonna"+ "                    | |( )| |   | |   | |      |   _ (  |  __)   | |   | |   ( (   ) )|  ___ \\ ")
+    print("    {   |     (       )|   (.~`  `~,             be"+ "                   | || || |   | |   | |      |  ( \\ \\ | (      | |   ) |    \\ \\_/ / | (   ) )")
+    print("    {   |      \\   _.'  \\   )       }             pop-u-lar!"+"          | () () |___) (___| (____/\\|  /  \\ \\| (____/\\| (__/  )     \\   /  ( (___) )")
+    print("    ;   |       ;`\\      `)-`       }     _.._   "+"                     (_______)\\_______/(_______/|_/    \\/(_______/(______/       \\_/    \\_____/")
     print("     '.(\\,     ;   `\\    / `.       }__.-'__.-'")
     print("      ( (/-;~~`;     `\\_/    ;   .'`  _.-'      ")
     print("      `/|\\/   .'\\.    /o\\   ,`~~`~~~~`        ")
@@ -90,7 +89,7 @@ def chromedriver_setup():
     # Quit the first temp-run
     driver.quit()
     # Update our options with the safe user agent
-    chrome_options.add_argument(f'user-agent={safe_user_agent}')
+    chrome_options.add_argument(f'--user-agent={safe_user_agent}')
     # Driver re-initialized with safe user agent and headless
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
 
@@ -174,187 +173,94 @@ def username_fix(username):
     return username
 
 
-def number_convert(amount):
-    msg = '''\nThis account has >= 1 Million followers / following,
-    which will take a long time to iterate through.
-    Continue? (Y/n): '''
+def create_headers():
+    sleep(5)  # Allow headers to build up
 
-    if amount.find(',') != -1:  # Handle for commas and K in number, can't have both in one number
-        amount = amount.replace(',', '')  # Make into int and remove commas if present
-    elif amount.find('K') != -1:  # If K (thousand) is present
-        amount = amount.replace('K', '') + "000"  # Remove K and add 000 to make it a usable thousand number
-    elif amount.find('M') != -1:  # If account has a million or more followers, just quit
-        if 'Y' in input(msg).upper():
-            amount = amount.replace('M', '') + "000000"
-        else:
-            print("\nQuitting...\n")
-            driver.quit()
-            quit()
-
-    # int() everything, not just the above cases e.g. 0-999
-    return int(amount)
-
-
-# Click on the right elements to get the follower/following lists
-def get_numbers():
-    # Get self page
-    driver.get(f"https://www.instagram.com/{username}")
-    sleep(3)
-
-    # Use string() instead of text() here
-    wait = WebDriverWait(driver, 10)
-    raw_html = wait.until(EC.presence_of_all_elements_located((By.XPATH, 
-    f"//div[contains(string(), ' following')]")))[2].get_attribute('innerHTML')
-
-    # Get Followers Number, used to track javascript passes
-    myAmountofFollowers = re.search(r'>([\d,]+[MK]?)</span></span>\s+followers', raw_html).group(1)
-    myAmountofFollowers = number_convert(myAmountofFollowers)
-
-    # Get Following Number
-    myAmountofFollowing = re.search(r'>([\d,]+[MK]?)</span></span>\s+following', raw_html).group(1)
-    myAmountofFollowing = number_convert(myAmountofFollowing)
-
-    return [myAmountofFollowers, myAmountofFollowing]
-
-
-def create_xhr_logs():
-    wait = WebDriverWait(driver, 10)
-
-    # Open 'Followers' Modal to get cookies
-    driver.get(f"https://www.instagram.com/{username}/followers")
-    sleep(5)
-
-    scroll_elem = wait.until(EC.presence_of_element_located((By.XPATH, 
-    "//div[contains(@style, 'height: auto; overflow: hidden auto;')]/..")))
-
-    # Initital followers setup
-    driver.execute_script("window.dispatchEvent(new Event('resize'));")
-    driver.execute_script("arguments[0].scrollTop += 2000;", scroll_elem)
-
-    sleep(2)
-
-    # Followers w/ max_id
-    driver.execute_script("window.dispatchEvent(new Event('resize'));")
-    driver.execute_script("arguments[0].scrollTop += 2000;", scroll_elem)
-
-
-def build_lists():
-    followers, following = [], []
-
-    # Need request info from dev tools 'Network' tab
-    cookies = {}
     temp_headers = {}
+
+    safe_user_agent = driver.execute_script("return navigator.userAgent;")
 
     # https://gist.github.com/lorey/079c5e178c9c9d3c30ad87df7f70491d
     logs_raw = driver.get_log("performance")
     logs = [json.loads(lr["message"])["message"] for lr in logs_raw]
 
+    # Keep going and save the last one
     for log in logs:
         if log["method"] != "Network.requestWillBeSentExtraInfo":
             continue
 
-        if all(sub in log['params']['headers'][':path'] for sub in ["api/v1/friendships", "followers", "max_id"]):
-            pairs = log['params']['headers']['cookie'].split("; ")
-            for pair in pairs:
-                key, value = pair.split("=")
-                cookies[key] = value
+        if "api/graphql" in log['params']['headers'][':path']:
+            try:
+                if log['params']['headers']['cookie']:
+                    temp_headers = log['params']['headers']
+                    break
+            except KeyError:
+                continue
 
-            temp_headers = log['params']['headers']
-            break
-
-    # Remove "Headless"
-    temp_headers['sec-ch-ua']=temp_headers['sec-ch-ua'].replace("HeadlessChrome", "Google Chrome")
-    version_get = driver.execute_script("return navigator.userAgentData.getHighEntropyValues(['fullVersionList']).then((values) => { return values; });")
-    sleep(1)
-    chrome_version, nab_version = "", ""
-    # Add proper version numbers to headers
-    for i in version_get['fullVersionList']:
-        if i['brand'] == "HeadlessChrome":
-            chrome_version = i['version']
-        if i['brand'] == "Not(A:Brand":
-            nab_version = i['version']
-    temp_headers['sec-ch-ua-full-version-list'] = f'"Chromium";v="{chrome_version}", "Not(A:Brand";v="{nab_version}", "Google Chrome";v="{chrome_version}"'
-
-    headers = {'authority': "www.instagram.com",
-               'accept': "*/*",
-               'accept-language': "en-US,en;q=0.9",
-               'dpr': f"{temp_headers['dpr']}",
-               'referer': '',
-               'sec-ch-prefers-color-scheme': "dark",
-               'sec-ch-ua': f"{temp_headers['sec-ch-ua']}",
-               'sec-ch-ua-full-version-list': f"{temp_headers['sec-ch-ua-full-version-list']}",
-               'sec-ch-ua-mobile': '?0',
-               'sec-ch-ua-model': '""',
-               'sec-ch-ua-platform': f"{temp_headers['sec-ch-ua-platform']}",
-               'sec-ch-ua-platform-version': f"{temp_headers['sec-ch-ua-platform-version']}",
-               'sec-fetch-dest': 'empty',
-               'sec-fetch-mode': 'cors',
-               'sec-fetch-site': 'same-origin',
-               'user-agent': f"{safe_user_agent}",
-               'viewport-width': f"{random.uniform(460, 500)}",
-               'x-asbd-id': f"{temp_headers['x-asbd-id']}",
-               'x-csrftoken': f"{temp_headers['x-csrftoken']}",
-               'x-ig-app-id': f"{temp_headers['x-ig-app-id']}",
-               'x-ig-www-claim': f"{temp_headers['x-ig-www-claim']}",
-               'x-requested-with': 'XMLHttpRequest'
+    headers = {
+           'authority': "www.instagram.com",
+           'accept': "*/*",
+           'accept-language': "en-US,en;q=0.9",
+           'cookie': f"{temp_headers['cookie']}",
+           'dpr': f"{temp_headers['dpr']}",
+           'referer': f"https://www.instagram.com/{username}/",
+           'sec-ch-prefers-color-scheme': "dark",
+           'sec-ch-ua': f"{temp_headers['sec-ch-ua']}",
+           'sec-ch-ua-mobile': '?0',
+           'sec-ch-ua-model': '""',
+           'sec-ch-ua-platform': f"{temp_headers['sec-ch-ua-platform']}",
+           'sec-fetch-dest': 'empty',
+           'sec-fetch-mode': 'cors',
+           'sec-fetch-site': 'same-origin',
+           'user-agent': f"{safe_user_agent}",
+           'viewport-width': f"{random.uniform(460, 500)}"
     }
 
-    # Build Followers List
-    max_id = ""
-    headers['referer'] = f"https://www.instagram.com/{username}/followers/?next=%2F"
-    followers_setup_url = f"https://www.instagram.com/api/v1/friendships/{cookies['ds_user_id']}/followers/?count=12&search_surface=follow_list_page"
+    return headers
 
-    # Initial
-    resp = requests.get(url=followers_setup_url, headers=headers, cookies=cookies)
+
+def build_lists():
+    followers, following = [], []
+
+    user_id = re.search(r'ds_user_id=(\d+)', headers['cookie']).group(1)
+
+    print("Part 1/2 - Followers")
+    # Init
+    followers_init_url = f'https://www.instagram.com/graphql/query/?query_hash=c76146de99bb02f6415203be841dd25a&variables=%7B%22id%22%3A%22{user_id}%22%2C%22include_reel%22%3Atrue%2C%22fetch_mutual%22%3Atrue%2C%22first%22%3A50%2C%22after%22%3Anull%7D'
+    resp = requests.get(url=followers_init_url, headers=headers)
     data = resp.json()
-    usernames = [user['username'] for user in data['users']]
-    followers.extend(usernames)
-    max_id = data['next_max_id']
+    followers.extend([i['node']['username'] for i in data['data']['user']['edge_followed_by']['edges']])
+    num_followers = int(data['data']['user']['edge_followed_by']['count'])
+    after_val = urllib.parse.quote(data['data']['user']['edge_followed_by']['page_info']['end_cursor'])
     sleep(random.uniform(2, 3.5))
 
     # Normal
-    print("\nPart 1/2 - Followers")
-    while True:  # Go until no more 'next_max_id'
-        # We need to keep initializing this f-string with the updated variables
-        followers_url = f"https://www.instagram.com/api/v1/friendships/{cookies['ds_user_id']}/followers/?count=12&max_id={max_id}&search_surface=follow_list_page"
-        resp = requests.get(url=followers_url, headers=headers, cookies=cookies)
+    for i in trange(ceil(num_followers/50)):
+        followers_norm_url = f'https://www.instagram.com/graphql/query/?query_hash=c76146de99bb02f6415203be841dd25a&variables=%7B%22id%22%3A%22{user_id}%22%2C%22include_reel%22%3Atrue%2C%22fetch_mutual%22%3Atrue%2C%22first%22%3A50%2C%22after%22%3A%22{after_val}%22%7D'
+        resp = requests.get(url=followers_norm_url, headers=headers)
         data = resp.json()
-        usernames = [user['username'] for user in data['users']]
-        followers.extend([i for i in usernames if i not in followers])
-        if 'next_max_id' in data:
-            max_id = data['next_max_id']
-        else:
-            break
+        followers.extend([i['node']['username'] for i in data['data']['user']['edge_followed_by']['edges']])
+        after_val = urllib.parse.quote(data['data']['user']['edge_followed_by']['page_info']['end_cursor'])
         sleep(random.uniform(2, 3.5))
+    
 
-    # Build Following List
-    max_id = ""
-    headers['referer'] = f"https://www.instagram.com/{username}/following/?next=%2F"
-    following_setup_url = f"https://www.instagram.com/api/v1/friendships/{cookies['ds_user_id']}/following/?count=12"
-
-    # Initial
-    resp = requests.get(url=following_setup_url, headers=headers, cookies=cookies)
-    data = resp.json()
-    usernames = [user['username'] for user in data['users']]
-    following.extend(usernames)
-    max_id = data['next_max_id']
-    sleep(random.uniform(2, 3.5))
-
-    # Normal
     print("\nPart 2/2 - Following")
-    while True:
-        following_url = f"https://www.instagram.com/api/v1/friendships/{cookies['ds_user_id']}/following/?count=12&max_id={max_id}"
-        resp = requests.get(url=following_url, headers=headers, cookies=cookies)
+    following_init_url = f'https://www.instagram.com/graphql/query/?query_hash=d04b0a864b4b54837c0d870b0e77e076&variables=%7B%22id%22%3A%22{user_id}%22%2C%22include_reel%22%3Atrue%2C%22fetch_mutual%22%3Atrue%2C%22first%22%3A50%2C%22after%22%3Anull%7D'
+    resp = requests.get(url=following_init_url, headers=headers)
+    data = resp.json()
+    following.extend([i['node']['username'] for i in data['data']['user']['edge_follow']['edges']])
+    num_following = int(data['data']['user']['edge_follow']['count'])
+    after_val = urllib.parse.quote(data['data']['user']['edge_follow']['page_info']['end_cursor'])
+    sleep(random.uniform(2, 3.5))
+
+    for i in trange(ceil(num_following/50)):
+        following_norm_url = f'https://www.instagram.com/graphql/query/?query_hash=d04b0a864b4b54837c0d870b0e77e076&variables=%7B%22id%22%3A%22{user_id}%22%2C%22include_reel%22%3Atrue%2C%22fetch_mutual%22%3Atrue%2C%22first%22%3A50%2C%22after%22%3A%22{after_val}%22%7D'
+        resp = requests.get(url=following_norm_url, headers=headers)
         data = resp.json()
-
-        usernames = [user['username'] for user in data['users']]
-
-        following.extend([i for i in usernames if i not in following])
-        if 'next_max_id' in data:
-            max_id = data['next_max_id']
-        else:
-            break
+        following.extend([i['node']['username'] for i in data['data']['user']['edge_follow']['edges']])
+        after_val = after_val = urllib.parse.quote(data['data']['user']['edge_follow']['page_info']['end_cursor'])
         sleep(random.uniform(2, 3.5))
+
 
     # differences = whoIFollow - (myFollowers - peopleIdontFollowBack)
     # People who I follow who are not my followers
@@ -418,7 +324,7 @@ def print_results(differences, username):
     f.close()
 
     # Print Results to stdout
-    print(green, " ")  # Newline before "Results: "
+    print(green, "\n")  # Newline before "Results: "
 
     # Lists Header
     print(f' {following_results_string:<50} {followers_results_string:<50}')
@@ -429,19 +335,10 @@ def print_results(differences, username):
         print(f' {following:<50} {followers:<50}')
 
 
-def spinner_task(stop_event):
-    spinner = cycle(['\\', '|', '/', '-'])
-    while not stop_event.is_set():
-        sleep(0.15)
-        sys.stdout.write(f"[{next(spinner)}] Collecting Initial Info ...\x1b[?25l")
-        sys.stdout.flush()
-        sys.stdout.write('\b'*40)
-
-
 
 if __name__ == "__main__":
 
-    version = "5.0"
+    version = "6.0"
 
     if '--version' in sys.argv or '-v' in sys.argv:
         print(f"\nWicked v{version}\n")
@@ -467,17 +364,16 @@ if __name__ == "__main__":
 
     username, password = input_creds()  # Enter and store creds
 
-    # Driver initialization and argument setting
+    # Driver initialization and argument settings
     chrome_options = Options()  # Initialize options
-    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--headless=new")  # =new is better option
     chrome_options.add_argument("--window-size=1920,1080")  # Do not use mobile template
     chrome_options.add_argument("--no-sandbox")  # Helping argument
     chrome_options.add_argument("--tls1.3")  # Encrypt info using TLS v1.3
     chrome_options.add_argument("--lang=en-US")  # Force English language so we can find the right elements
-    chrome_options.set_capability("goog:loggingPrefs", {"performance": "ALL"}) # Capture XHR
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off stdout logs on Windows
+    chrome_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})  # Capture XHR
 
-    # Init vars that chromedriver_setup will edit
-    safe_user_agent = ""
     # Top level scope, all functions can access this variable
     driver = chromedriver_setup()
 
@@ -485,23 +381,9 @@ if __name__ == "__main__":
 
     mfa_check()
 
-    # Start spinner thread
-    stop_event = threading.Event()
-    spinner_thread = threading.Thread(target=spinner_task, args=(stop_event,))
-    spinner_thread.start()
-
-    # Info collection
     username = username_fix(username)
-    myAmountofFollowers, myAmountofFollowing = get_numbers()
-    create_xhr_logs()
 
-    # End spinner thread
-    stop_event.set()
-    spinner_thread.join()
-    print(f"[+] Collecting Initial Info - {green}Done!{reset}\x1b[?25h\n")  # Show cursor again
-
-    print(f"\nNumber of Followers: {myAmountofFollowers}")
-    print(f"Number of Following: {myAmountofFollowing}\n")
+    headers = create_headers()
 
     # Prevent from sleeping
     with keep.presenting() as k:

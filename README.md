@@ -1,4 +1,4 @@
-![Version 5.0](http://img.shields.io/badge/version-v5.0-orange.svg)
+![Version 6.0](http://img.shields.io/badge/version-v6.0-orange.svg)
 ![Python 3.12](http://img.shields.io/badge/python-3.12-blue.svg)
 ![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
@@ -10,7 +10,7 @@ A program that prints two lists: a list of people that you follow, but don't fol
 </br>
 
 ## How it works:
-This program scrapes Instagram web pages that contain the usernames of the people the you follow and who are following you. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
+This program scrapes Instagram web pages and uses that data to make requests to Instagram's GraphQL API, in order to create lists of the usernames that follow you and that you follow. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
 
 </br>
 
@@ -28,7 +28,7 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 </br>
 
 ### Sample Program Output
-![alt text](https://github.com/kyletimmermans/wicked/blob/master/output_screenshot.png "Sample Program Output")
+![alt text](https://github.com/kyletimmermans/wicked/blob/master/results_screenshot.png "Sample Program Output")
 
 </br>
 
@@ -74,7 +74,6 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 <div>&ensp;&ensp;-Added language chromedriver flag to force en-US</div>
 <div>&ensp;&ensp;-Added --version and -v command line flag<div>
 <div>v4.0:</div>
-<div>&ensp;&ensp;-Updated banner to v4<div>
 <div>&ensp;&ensp;-Added option to take email or phone number instead of just Instagram username<div>
 <div>&ensp;&ensp;-Added support for million(s) and just 0 followers / following<div>
 <div>&ensp;&ensp;-Using wakepy to prevent program from sleeping and crashing<div>
@@ -102,3 +101,6 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 <div>&ensp;&ensp;-Added: -h, -u, --help, --usage flags</div>
 <div>&ensp;&ensp;-Fixes to ensure that all following/followers are retrieved properly<div>
 <div>&ensp;&ensp;&ensp;&ensp;-Removed scrolling method - Switched to intercept & replay XHR</div>
+<div>v6.0:</div>
+<div>&ensp;&ensp;-Now using GraphQL API endpoints to get follower and following username lists</div>
+<div>&ensp;&ensp;&ensp;&ensp;-Getting follower and following count done through this API as well</div>
