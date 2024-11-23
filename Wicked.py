@@ -2,9 +2,9 @@
 
 '''
 Kyle Timmermans
-Wicked v6.0
-March 20, 2024
-Python 3.12.2
+Wicked v6.1
+November 22, 2024
+Python 3.12.5
 '''
 
 # Base imports
@@ -50,11 +50,11 @@ def print_banner():
     print("        |         |::....:|                                                    _________ _______  _        _______  ______                ______")
     print("        |        /`   / ` \\                                           |\\     /|\\__   __/(  ____ \\| \\    /\\(  ____ \\(  __  \\    |\\     /| / ____ \\")
     print("        |       (   .' ^ \\^)                                          | )   ( |   ) (   | (    \\/|  \\  / /| (    \\/| (  \\  )   | )   ( |( (    \\/")
-    print("        |_.,   (    \\    -/(            You're" + "                        | | _ | |   | |   | |      |  (_/ / | (__    | |   ) |   | |   | || (____  ")
-    print("     ,~`|   `~./     )._=/  )  ,,            gonna"+ "                    | |( )| |   | |   | |      |   _ (  |  __)   | |   | |   ( (   ) )|  ___ \\ ")
-    print("    {   |     (       )|   (.~`  `~,             be"+ "                   | || || |   | |   | |      |  ( \\ \\ | (      | |   ) |    \\ \\_/ / | (   ) )")
-    print("    {   |      \\   _.'  \\   )       }             pop-u-lar!"+"          | () () |___) (___| (____/\\|  /  \\ \\| (____/\\| (__/  )     \\   /  ( (___) )")
-    print("    ;   |       ;`\\      `)-`       }     _.._   "+"                     (_______)\\_______/(_______/|_/    \\/(_______/(______/       \\_/    \\_____/")
+    print("        |_.,   (    \\    -/(            You're                        | | _ | |   | |   | |      |  (_/ / | (__    | |   ) |   | |   | || (____  ")
+    print("     ,~`|   `~./     )._=/  )  ,,            gonna                    | |( )| |   | |   | |      |   _ (  |  __)   | |   | |   ( (   ) )|  ___ \\ ")
+    print("    {   |     (       )|   (.~`  `~,             be                   | || || |   | |   | |      |  ( \\ \\ | (      | |   ) |    \\ \\_/ / | (   ) )")
+    print("    {   |      \\   _.'  \\   )       }             pop-u-lar!          | () () |___) (___| (____/\\|  /  \\ \\| (____/\\| (__/  )     \\   /  ( (___) )")
+    print("    ;   |       ;`\\      `)-`       }     _.._                        (_______)\\_______/(_______/|_/    \\/(_______/(______/       \\_/    \\_____/")
     print("     '.(\\,     ;   `\\    / `.       }__.-'__.-'")
     print("      ( (/-;~~`;     `\\_/    ;   .'`  _.-'      ")
     print("      `/|\\/   .'\\.    /o\\   ,`~~`~~~~`        ")
@@ -79,8 +79,15 @@ def input_creds():
 
 
 def chromedriver_setup():
-    # Chromedriver automatically downloaded w/ Selenium 4 & webdriver-manager
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    # Chromedriver automatically downloaded w/ Selenium & webdriver-manager
+    try:
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    # Catch need to update Chrome issue
+    except OSError as e:
+        if e.errno == 8:
+            print(f"\n{yellow}Note:{reset} Failed to run chromedriver binary - Try updating Chrome")
+            quit()
+
     # Get the user agent
     driver.get("https://www.instagram.com/")
     sleep(5)
@@ -106,7 +113,7 @@ def instagram_login(username, password):
             try:  # Check internet connection
                 driver.find_element(By.CSS_SELECTOR, "[aria-label='Phone number, username, or email']").send_keys(username)  # Send username
             except NoSuchElementException:
-                print("\n"+red+"Error: "+reset+ "No Internet Connection!")
+                print(f"\n{red}Error:{reset} No Internet Connection!")
                 driver.quit()
                 quit()
               # Send password
@@ -154,8 +161,8 @@ def mfa_check():
     print("\n")
 
 
-# If not username, we cannot pass an email or phone #
-# to a link like instagram.com/{username}/followers. 
+# If not username, we cannot pass an email or phone number
+# to a link like instagram.com/{username}/followers.
 # Instead, we have to go get real username
 def username_fix(username):
     if '@' in username or username.isdigit():
@@ -164,7 +171,7 @@ def username_fix(username):
         driver.get("https://www.instagram.com/!!!")
         sleep(4)
         wait = WebDriverWait(driver, 10)
-        profile_button = wait.until(EC.presence_of_element_located((By.XPATH, 
+        profile_button = wait.until(EC.presence_of_element_located((By.XPATH,
         "//span[text() = 'Profile']")))
         profile_button.click()
         sleep(4)
@@ -191,9 +198,11 @@ def create_headers():
 
         if "api/graphql" in log['params']['headers'][':path']:
             try:
-                if log['params']['headers']['cookie']:
-                    temp_headers = log['params']['headers']
-                    break
+                for i in log['params']['headers']['cookie'].split('; '):
+                    # Must have "ds_user_id" cookie set for build_lists()
+                    if "ds_user_id" in i:
+                        temp_headers = log['params']['headers']
+                        break
             except KeyError:
                 continue
 
@@ -202,7 +211,6 @@ def create_headers():
            'accept': "*/*",
            'accept-language': "en-US,en;q=0.9",
            'cookie': f"{temp_headers['cookie']}",
-           'dpr': f"{temp_headers['dpr']}",
            'referer': f"https://www.instagram.com/{username}/",
            'sec-ch-prefers-color-scheme': "dark",
            'sec-ch-ua': f"{temp_headers['sec-ch-ua']}",
@@ -242,7 +250,7 @@ def build_lists():
         followers.extend([i['node']['username'] for i in data['data']['user']['edge_followed_by']['edges']])
         after_val = urllib.parse.quote(data['data']['user']['edge_followed_by']['page_info']['end_cursor'])
         sleep(random.uniform(2, 3.5))
-    
+
 
     print("\nPart 2/2 - Following")
     following_init_url = f'https://www.instagram.com/graphql/query/?query_hash=d04b0a864b4b54837c0d870b0e77e076&variables=%7B%22id%22%3A%22{user_id}%22%2C%22include_reel%22%3Atrue%2C%22fetch_mutual%22%3Atrue%2C%22first%22%3A50%2C%22after%22%3Anull%7D'
@@ -338,7 +346,7 @@ def print_results(differences, username):
 
 if __name__ == "__main__":
 
-    version = "6.0"
+    version = "6.1"
 
     if '--version' in sys.argv or '-v' in sys.argv:
         print(f"\nWicked v{version}\n")
@@ -358,7 +366,7 @@ if __name__ == "__main__":
 
     # Initialize colorama
     init()
-    green, red, reset = Fore.GREEN, Fore.RED, Fore.RESET
+    green, red, yellow, reset = Fore.GREEN, Fore.RED, Fore.YELLOW, Fore.RESET
 
     print_banner()
 
