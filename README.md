@@ -10,7 +10,9 @@ A program that prints two lists: a list of people that you follow, but don't fol
 </br>
 
 ## How it works:
-This program scrapes Instagram web pages and uses that data to make requests to Instagram's GraphQL API, in order to create lists of the usernames that follow you and that you follow. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
+This program scrapes Instagram web pages and uses that data to make requests to Instagram's GraphQL API (no need for an API key!), in order to create lists of the usernames that follow you and that you follow. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
+
+Wicked uses several evasion/masquerading techniques, including throttling, to appear as a legitimate user and to prevent being seen as a bot/web scraper.
 
 </br>
 
@@ -18,7 +20,7 @@ This program scrapes Instagram web pages and uses that data to make requests to 
 1. Prerequisites: Must have Python3 and Google Chrome on your system
 2. Run: **pip3 install -r requirements.txt**
 3. Run: **python3 Wicked.py**
-4. Input your username/email/phone # and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to return the results. Run time is dependant on how many people you follow / follow you
+4. Input your username/email/phone # and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to return the results. Run time is dependent on how many people you follow / follow you
 
 _Note:_
 
@@ -28,7 +30,7 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 </br>
 
 ### Sample Program Output
-![alt text](https://github.com/kyletimmermans/wicked/blob/master/results_screenshot.png "Sample Program Output")
+![Sample Program Output](/media/results_screenshot.png?raw=true)
 
 </br>
 
@@ -110,4 +112,5 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 <div>&ensp;&ensp;-Fixed method for grabbing user_id</div>
 <div>&ensp;&ensp;-Deprecated unused 'dpr' key in 'headers' key-value store</div>
 <div>&ensp;&ensp;-Switched to f-strings from string concatenation for error messages and ASCII art</div>
+<div>&ensp;&ensp;-Removed "Devtools listening on ws://" and TensorFlow debug logs showing up in Windows stdout</div>
 <div>&ensp;&ensp;-Updated dependencies (requirements.txt)</div>

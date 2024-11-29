@@ -8,6 +8,7 @@ Python 3.12.5
 '''
 
 # Base imports
+import os
 import re
 import sys
 import json
@@ -356,12 +357,15 @@ if __name__ == "__main__":
         print(f"\nWicked v{version}")
         print("-----------\n")
         print("See who's not following you back and who you don't follow back on Instagram!\n")
-        print("Usage: This program does not take any flags, simply run this script with Python3")
+        print("Usage: This program does not take any flags, simply run this script with Python3.")
         print("       You'll be prompted to put in your Instagram username & password, and MFA code")
-        print("       if applicable\n")
-        print("Nervous about giving this script your password? No worries! Take a look at the code")
-        print("and you'll see that this program just passes it along to Instagram and nothing else.")
-        print("It's also using TLS to send all the data.\n")
+        print("       if applicable. Make sure you have an up-to-date version of Chrome on your system!\n")
+        print("- Nervous about giving this script your password? No worries! Take a look at the code")
+        print("  and you'll see that this program just passes it along to Instagram and nothing else.")
+        print("  It's also using TLS to send all the data.\n")
+        print("- Due to the nature of Instagram's website/backend changing, things could break in")
+        print("  this program. If you're getting strange errors and you can't figure out why, feel free")
+        print("  to create an issue in the repo: github.com/kyletimmermans/wicked\n")
         quit()
 
     # Initialize colorama
@@ -379,8 +383,10 @@ if __name__ == "__main__":
     chrome_options.add_argument("--no-sandbox")  # Helping argument
     chrome_options.add_argument("--tls1.3")  # Encrypt info using TLS v1.3
     chrome_options.add_argument("--lang=en-US")  # Force English language so we can find the right elements
+    chrome_options.add_argument("--log-level=3")  # Prevent potential logs going to stdout
     chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off stdout logs on Windows
     chrome_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})  # Capture XHR
+    os.environ['WDM_LOG'] = '0'  # Prevent chromedriver_manager from sending logs to stdout
 
     # Top level scope, all functions can access this variable
     driver = chromedriver_setup()
