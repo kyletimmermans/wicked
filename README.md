@@ -20,7 +20,7 @@ Wicked uses several evasion/masquerading techniques, including throttling, to ap
 
 <div>&#8203;</div>
 
-## How to run it:
+## How to run it
 1. Prerequisite: Must have Python3
 2. Run: **pip3 install -r requirements.txt**
 3. Run: **python3 Wicked.py**
