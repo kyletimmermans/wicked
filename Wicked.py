@@ -2,18 +2,19 @@
 
 '''
 Kyle Timmermans
-Wicked v6.1
-November 22, 2024
+Wicked v6.4
+December 22, 2024
 Python 3.12.5
 '''
 
 # Base imports
-import os
 import re
 import sys
 import json
 import random
 import pwinput
+import argparse
+import platform
 import requests
 import urllib.parse
 from math import ceil
@@ -24,8 +25,9 @@ from datetime import datetime
 from colorama import Fore, init
 from itertools import zip_longest, cycle
 
-# Auto download & install chromedriver
-from webdriver_manager.chrome import ChromeDriverManager
+# Prevent Windows logs
+if platform.system() == "Windows":
+    from subprocess import CREATE_NO_WINDOW
 
 # Driving Chrome (Headless) with Selenium
 from selenium import webdriver
@@ -39,6 +41,32 @@ from selenium.common.exceptions import (
     TimeoutException,
     NoSuchElementException
 )
+
+
+def usage(vers):
+    print(f"\nWicked v{vers}")
+    print("-----------\n")
+    print("See who's not following you back and who you don't follow back on Instagram!\n")
+    print("You'll be prompted to put in your Instagram username & password, and MFA code if applicable\n")
+    print("Usage: Wicked.py [-o FILENAME]\n")
+    print("Flags:")
+    print("-h, --help, -u, --usage                    Show this menu\n")
+    print("-v, --version                              Print program version\n")
+    print("-o, --output                               Write results (both lists) to file")
+    print("                                           E.g. python3 Wicked.py -o results.txt\n")
+    print("Notes:")
+    print("- Nervous about giving this script your password? No worries! Take a look at the code")
+    print("  and you'll see that this program just passes it along to Instagram and nothing else.")
+    print("  It's also using TLS to send all the data.\n")
+    print("- Due to the nature of Instagram's website/backend changing, things could break in")
+    print("  this program. If you're getting strange errors and you can't figure out why, feel free")
+    print("  to create an issue in the repo: github.com/kyletimmermans/wicked\n")
+    quit()
+
+
+def version(vers):
+    print(f"\nWicked v{vers}\n")
+    quit()
 
 
 def print_banner():
@@ -80,26 +108,26 @@ def input_creds():
 
 
 def chromedriver_setup():
-    # Chromedriver automatically downloaded w/ Selenium & webdriver-manager
-    try:
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
-    # Catch need to update Chrome issue
-    except OSError as e:
-        if e.errno == 8:
-            print(f"\n{yellow}Note:{reset} Failed to run chromedriver binary - Try updating Chrome")
-            quit()
+    chrome_service = Service()
+
+    if platform.system() == "Windows":
+        chrome_service.creation_flags = CREATE_NO_WINDOW
 
     # Get the user agent
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
     driver.get("https://www.instagram.com/")
     sleep(5)
     safe_user_agent = driver.execute_script("return navigator.userAgent;").replace("Headless", "")
     sleep(1)
+
     # Quit the first temp-run
     driver.quit()
+
     # Update our options with the safe user agent
     chrome_options.add_argument(f'--user-agent={safe_user_agent}')
+
     # Driver re-initialized with safe user agent and headless
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
 
     return driver
 
@@ -127,7 +155,7 @@ def instagram_login(username, password):
         except NoSuchElementException:  # If error not found, successful login
             break
         else:  # If error found, try new user/pwd and go back to the top
-            print("Username or Password is Incorrect! Try Again (Logout of Instagram if you are already logged in)\n")
+            print("Username or Password is incorrect! Try again (Logout of Instagram if you are already logged in)\n")
             username, password = input_creds()
 
 
@@ -141,7 +169,7 @@ def mfa_check():
         except (NoSuchElementException, TimeoutException): # No MFA enabled, break and move on
             break
         if mfa_check_elem:  # Code needed
-            mfa_code = input("Input MFA code: ")
+            mfa_code = input("Input MFA Code: ")
             driver.find_element(By.CSS_SELECTOR, "[aria-label='Security Code']").send_keys(mfa_code)
             sleep(2) # Wait for MFA button to be clickable
             driver.find_element(By.XPATH, "//button[contains(text(), 'Confirm')]").click()
@@ -285,27 +313,37 @@ def build_lists():
     return [following_diff, followers_diff]
 
 
-# Print Results to Console & Write Results File
+# Print Results to Console
 def print_results(differences, username):
     following_diff = differences[0]
     followers_diff = differences[1]
 
-    # Create file for writing results
-    # Don't want to overwrite other result files so
-    # add a (1), (2), (3) ...  to file name if need be
-    f = None  # Want to use outside of the while-loop scope
-    counter = 0
-    while True:
-        try:
-            # if filename not taken
-            if counter == 0:
-                f = open("wicked_results.txt", "x")
-            else:
-                f = open(f"wicked_results ({counter}).txt", "x")
-            # If no error, break loop
-            break
-        except FileExistsError:
-            counter += 1
+    # Header Variables
+    following_results_string = f"Not Following You Back ({len(following_diff):,}):"
+    followers_results_string = f"You Don't Follow Back ({len(followers_diff):,}):"
+    following_len_string = len(following_results_string)*'-'
+    followers_len_string = len(followers_results_string)*'-'
+
+    # Print Results to stdout
+    print(green, "\n")  # Newline before "Results: "
+
+    # Lists Header
+    print(f' {following_results_string:<50} {followers_results_string:<50}')
+    print(f' {following_len_string:<50} {followers_len_string:<50}{reset}')
+
+    # Lists Content
+    for following, followers in zip_longest(following_diff, followers_diff, fillvalue=""):
+        print(f' {following:<50} {followers:<50}')
+
+    print("")
+
+
+# Write Results to File
+def write_results(filename, differences, username, vers):
+    following_diff = differences[0]
+    followers_diff = differences[1]
+
+    f = open(f"{filename}", "w")
 
     # Header Variables
     following_results_string = f"Not Following You Back ({len(following_diff):,}):"
@@ -314,7 +352,7 @@ def print_results(differences, username):
     followers_len_string = len(followers_results_string)*'-'
 
     # Write Results File
-    f.write(f"Wicked v{version} Results File\n")
+    f.write(f"Wicked v{vers} Results File\n")
     f.write(f"Username: {username}\n")
     f.write(f"Date: {datetime.now().strftime('%b-%d-%Y %H:%M:%S')}\n\n")
 
@@ -332,41 +370,21 @@ def print_results(differences, username):
 
     f.close()
 
-    # Print Results to stdout
-    print(green, "\n")  # Newline before "Results: "
-
-    # Lists Header
-    print(f' {following_results_string:<50} {followers_results_string:<50}')
-    print(f' {following_len_string:<50} {followers_len_string:<50}{reset}')
-
-    # Lists Content
-    for following, followers in zip_longest(following_diff, followers_diff, fillvalue=""):
-        print(f' {following:<50} {followers:<50}')
-
-
 
 if __name__ == "__main__":
 
-    version = "6.1"
+    curr_version = "6.4"
 
-    if '--version' in sys.argv or '-v' in sys.argv:
-        print(f"\nWicked v{version}\n")
-        quit()
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("-h", "--help", "-u", "--usage", help="Show usage/help menu", action="store_true")
+    parser.add_argument("-v", "--version", help="Print program version", action="store_true")
+    parser.add_argument("-o", "--output", help="Write results (both lists) to file", metavar="FILENAME", type=str)
+    args = parser.parse_args()
 
-    if any(arg in sys.argv for arg in ['-h', '-u', '--help', '--usage']):
-        print(f"\nWicked v{version}")
-        print("-----------\n")
-        print("See who's not following you back and who you don't follow back on Instagram!\n")
-        print("Usage: This program does not take any flags, simply run this script with Python3.")
-        print("       You'll be prompted to put in your Instagram username & password, and MFA code")
-        print("       if applicable. Make sure you have an up-to-date version of Chrome on your system!\n")
-        print("- Nervous about giving this script your password? No worries! Take a look at the code")
-        print("  and you'll see that this program just passes it along to Instagram and nothing else.")
-        print("  It's also using TLS to send all the data.\n")
-        print("- Due to the nature of Instagram's website/backend changing, things could break in")
-        print("  this program. If you're getting strange errors and you can't figure out why, feel free")
-        print("  to create an issue in the repo: github.com/kyletimmermans/wicked\n")
-        quit()
+    if args.help:
+        usage(curr_version)
+    elif args.version:
+        version(curr_version)
 
     # Initialize colorama
     init()
@@ -383,10 +401,14 @@ if __name__ == "__main__":
     chrome_options.add_argument("--no-sandbox")  # Helping argument
     chrome_options.add_argument("--tls1.3")  # Encrypt info using TLS v1.3
     chrome_options.add_argument("--lang=en-US")  # Force English language so we can find the right elements
-    chrome_options.add_argument("--log-level=3")  # Prevent potential logs going to stdout
     chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])  # Turn off stdout logs on Windows
     chrome_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})  # Capture XHR
-    os.environ['WDM_LOG'] = '0'  # Prevent chromedriver_manager from sending logs to stdout
+    chrome_options.add_argument("--disable-extensions")  # Don't let personal extensions break anything
+    chrome_options.add_argument("--incognito")  # Don't let other cookies/cache/settings break this process
+    # Stealth - Automation detection prevention (E.g. unset navigator.webdriver)
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_experimental_option('useAutomationExtension', False)
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
 
     # Top level scope, all functions can access this variable
     driver = chromedriver_setup()
@@ -406,3 +428,6 @@ if __name__ == "__main__":
     driver.quit()
 
     print_results(differences, username)
+
+    if args.output:
+        write_results(args.output, differences, username, curr_version)

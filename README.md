@@ -1,38 +1,50 @@
-![Version 6.1](http://img.shields.io/badge/Version-6.1-orange.svg)
+![Version 6.4](http://img.shields.io/badge/Version-6.4-orange.svg)
 ![Python 3.12](http://img.shields.io/badge/Python-3.12-blue.svg)
-![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green&label=Lastest%20Commit)
+![Latest Commit](https://img.shields.io/github/last-commit/kyletimmermans/wicked?color=green&label=Latest%20Commit)
 [![kyletimmermans Twitter](http://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Follow)](https://twitter.com/kyletimmermans)
 
 # <div align="center">Wicked</div>
 
 A program that prints two lists: a list of people that you follow, but don't follow you back, and a list of people that follow you, but that you don't follow back on Instagram, using Selenium
 
-</br>
+<div>&#8203;</div>
+
+![Sample Program Output](/media/results_screenshot.png?raw=true)
+
+<div>&#8203;</div>
 
 ## How it works:
 This program scrapes Instagram web pages and uses that data to make requests to Instagram's GraphQL API (no need for an API key!), in order to create lists of the usernames that follow you and that you follow. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
 
 Wicked uses several evasion/masquerading techniques, including throttling, to appear as a legitimate user and to prevent being seen as a bot/web scraper.
 
-</br>
+<div>&#8203;</div>
 
 ## How to run it:
-1. Prerequisites: Must have Python3 and Google Chrome on your system
+1. Prerequisite: Must have Python3
 2. Run: **pip3 install -r requirements.txt**
 3. Run: **python3 Wicked.py**
 4. Input your username/email/phone # and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to return the results. Run time is dependent on how many people you follow / follow you
 
 _Note:_
 
-_1. This program does not log your username or password, it simply passes it to the Instagram login form._
-_2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
+* This program does not log your username or password, it simply passes it to the Instagram login form
+* This program uses HTTPS and TLSv1.3 to send information to Instagram
 
-</br>
+<div>&#8203;</div>
 
-### Sample Program Output
-![Sample Program Output](/media/results_screenshot.png?raw=true)
+### Program Flags
 
-</br>
+```text
+-h, --help, -u, --usage         Show usage/help menu
+
+-v, --version                   Print program version
+
+-o, --output                    Write results (both lists) to file
+                                E.g. python3 Wicked.py -o results.txt
+```
+
+<div>&#8203;</div>
 
 ### Changelog
 <div><b>v1.0:</b> Initial-Release</div>
@@ -112,5 +124,11 @@ _2. This program uses HTTPS and TLSv1.3 to send information to Instagram._
 <div>&ensp;&ensp;-Fixed method for grabbing user_id</div>
 <div>&ensp;&ensp;-Deprecated unused 'dpr' key in 'headers' key-value store</div>
 <div>&ensp;&ensp;-Switched to f-strings from string concatenation for error messages and ASCII art</div>
-<div>&ensp;&ensp;-Removed "Devtools listening on ws://" and TensorFlow debug logs showing up in Windows stdout</div>
+<div>&ensp;&ensp;-Removed "DevTools listening on ws://" and TensorFlow debug logs showing up in Windows stdout</div>
 <div>&ensp;&ensp;-Updated dependencies (requirements.txt)</div>
+<div><b>v6.4:</b></div>
+<div>&ensp;&ensp;-Fixed: Now using CREATE_NO_WINDOW (subprocess) to prevent unnecessary logging on Windows (DevTools listening, TensorFlow), the flags added in the last version did not work</div>
+<div>&ensp;&ensp;-Removed: No longer using webdriver_manager library, Selenium's webdriver.chrome.service handles getting the chromedriver</div>
+<div>&ensp;&ensp;-Added: -o / --output flag - Results file no longer created by default, need to provide this flag and a filename to get a results file now</div>
+<div>&ensp;&ensp;-Added: Extra chromedriver flags to further prevent automation detection</div>
+<div>&ensp;&ensp;-Changed: All flags/args being parsed with argparse now</div>
