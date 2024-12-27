@@ -13,7 +13,7 @@ A program that prints two lists: a list of people that you follow, but don't fol
 
 <div>&#8203;</div>
 
-## How it works:
+## How it works
 This program scrapes Instagram web pages and uses that data to make requests to Instagram's GraphQL API (no need for an API key!), in order to create lists of the usernames that follow you and that you follow. By comparing the two lists, it returns all the usernames that are in the "Following" list and are not in your "Followers" list. Essentially, showing you who has not followed you back. It does the same process for showing you who follows you, but you aren't following them back.
 
 Wicked uses several evasion/masquerading techniques, including throttling, to appear as a legitimate user and to prevent being seen as a bot/web scraper.
