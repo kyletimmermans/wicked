@@ -22,9 +22,10 @@ Wicked uses several evasion/masquerading techniques, including throttling, to ap
 
 ## How to run it
 1. Prerequisite: Must have Python3
-2. Run: **pip3 install -r requirements.txt**
-3. Run: **python3 Wicked.py**
-4. Input your username/email/phone # and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to return the results. Run time is dependent on how many people you follow / follow you
+2. `git clone https://github.com/kyletimmermans/wicked.git && cd wicked`
+3. `pip3 install -r requirements.txt`
+4. `python3 Wicked.py`
+5. Input your username/email/phone # and password for Instagram (MFA code too, if enabled), and wait a few minutes for it to return the results. Run time is dependent on how many people you follow / follow you
 
 _Note:_
 
